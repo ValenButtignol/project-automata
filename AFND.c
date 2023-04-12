@@ -1,12 +1,17 @@
 #include <stdlib.h>
 #include <stdio.h>
-#define MAX_ARRAY 10
+#define MAX_ARRAY 11
 #define EMPTY -1
-#define LAMBDA -2
+#define LAMBDA 10
 
 //TODO: Agregar transiciones
 
-typedef struct afnd {
+typedef struct array {
+    int a[MAX_ARRAY];
+    int quantity;
+} Array;
+
+typedef struct NonDeterministicFiniteAutomaton {
 //TODO: Agregar estados
     int states; // conjunto de estados (K)
     int symbols;        // conjunto de simbolos que representan el alfabeto
@@ -14,10 +19,11 @@ typedef struct afnd {
     int initialState; // estado inicial del automaton
     int finalStates[MAX_ARRAY]; // conjunto de estados finales
     int quantityFinalStates;
-} AFND;
+} NDFA;
 
-AFND createAutomaton(int num_states, int num_symbols, int initialState, int finalStates[], int cantEstadosFinales);
-void addTransition(AFND *automaton, int fromState, int toState[], int quantityToStates, int symbol);
+NDFA createAutomaton(int num_states, int num_symbols, int initialState, int finalStates[], int cantEstadosFinales);
+void addTransition(NDFA *automaton, int fromState, int toState[], int quantityToStates, int symbol);
+Array lambdaClausure(NDFA* automaton, int states[], int quantityOfStates);
 
 int main() {
 
@@ -27,8 +33,7 @@ int main() {
     int estadosFinales[cantEstadosFinales];
     int estadoInicial = 1;
 
-    AFND automaton = createAutomaton(cantEstados, cantSimbolos, estadoInicial, estadosFinales, cantEstadosFinales);
-
+    NDFA automaton = createAutomaton(cantEstados, cantSimbolos, estadoInicial, estadosFinales, cantEstadosFinales);
 
     int toState[1] = {1};
     addTransition(&automaton, 0, toState, 1, 5);
@@ -37,15 +42,15 @@ int main() {
     return 0;
 }
 
-AFND createAutomaton(int num_states, int num_symbols, int initialState, int finalStates[], int cantEstadosFinales) {
-    AFND automaton;
+NDFA createAutomaton(int num_states, int num_symbols, int initialState, int finalStates[], int cantEstadosFinales) {
+    NDFA automaton;
     automaton.states = num_states;
     automaton.symbols = num_symbols;
     automaton.initialState = initialState;
     automaton.quantityFinalStates = cantEstadosFinales;
 
     // inicializar transiciones
-    for (int i = 0; i < num_states; i) {
+    for (int i = 0; i < num_states; i++) {
         for (int j = 0; j < num_symbols; j++) {
             for(int k = 0; k < num_states; k++){
                 automaton.delta[i][j][k] = EMPTY;
@@ -61,8 +66,39 @@ AFND createAutomaton(int num_states, int num_symbols, int initialState, int fina
     return automaton;
 }
 
-void addTransition(AFND *automaton, int fromState, int toState[], int quantityToStates, int symbol){
+void addTransition(NDFA *automaton, int fromState, int toState[], int quantityToStates, int symbol){
     for (int i = 0; i < quantityToStates; i++) {
         automaton->delta[fromState][symbol][i] = toState[i];
     }
+}
+
+Array lambdaClausure(NDFA* automaton, int states[], int quantityOfStates){
+
+    Array result;
+    result.quantity = 0;
+
+    for (int i = 0; i < quantityOfStates; i++) {
+        result.a[i] = states[i];
+        result.quantity++;
+    }
+
+    for (int i = 0; i < quantityOfStates; i++) {
+        for (int j = 0; j < automaton->states; j++) {
+            int currentState = automaton->delta[states[i]][LAMBDA][j];
+            if (currentState != EMPTY) {
+                int itsInResult = 0;
+                for (int k = 0; k < result.quantity && itsInResult == 0; k++) {
+                    if (currentState == result.a[k]){
+                        itsInResult = 1;
+                    }
+                }
+                if (itsInResult == 0) {
+                    result.a[result.quantity] = automaton->delta[states[i]][LAMBDA][j];
+                    result.quantity++;
+                }
+            }
+        }
+    }
+
+    return result;
 }
