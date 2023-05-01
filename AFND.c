@@ -64,77 +64,143 @@ int belongsToLanguage(NDFA automaton, char string[]);
 
 Array stringToArray(char string[]);
 
+typedef struct Transition {
+    int from;
+    int symbol;
+    Array to;
+} Transition;
+
+typedef struct ArrayOfTransitions {
+    Transition array[MAX_ARRAY];
+    int quantity;
+} ArrayOfTransitions;
+
 int main() {
 
-    int cantEstados = 6;
-    int cantSimbolos = 10;
-    int cantEstadosFinales = 2;
-    int estadosFinales[cantEstadosFinales]; // inicializar estados finales.
-    int estadoInicial = 1;
-/* 
-    NDFA automaton = createNDFAAutomaton(cantEstados, cantSimbolos, estadoInicial, estadosFinales, cantEstadosFinales);
+    int cantEstados = 4;
+    int cantSimbolos = 2;
+    int estadoInicial;
+    int estadosFinales[MAX_ARRAY];
+    int cantEstadosFinales;
 
+    NDFA automaton2;
+    int fromState;
+    int symbol;
     Array toStatesArray;
-    toStatesArray.a[0] = 2;     // en un indice cero, el estado 2 va a ser un destino.
-    toStatesArray.a[1] = 3;
-    toStatesArray.quantity = 2;
+    toStatesArray.quantity = 0;
+    ArrayOfTransitions arrayOfTransitions;
+    arrayOfTransitions.quantity = 0;
 
-    addTransitionToNDFA(&automaton, 0, toStatesArray, 5);
- */
+    // leer archivo
+    FILE *file;
+    file = fopen("automaton.dot", "r");
+    if (file == NULL) {
+        printf("Error\n");
+        exit(1);
+    }
 
-    cantEstados = 4;
-    cantSimbolos = 2;
-    cantEstadosFinales = 1;
-    estadosFinales[0] = 3;
-    estadoInicial = 0;
+    char line[100];
+    while (fgets(line, 100, file) != NULL) {
 
-    NDFA automaton2 = createNDFAAutomaton(cantEstados, cantSimbolos, estadoInicial, estadosFinales, cantEstadosFinales);
+        //capturar estado inicial
+        char *inic = strstr(line, "inic->");
+        if (inic) {
+            char cadenaNumero[3];
+            cadenaNumero[0] = inic[7];
+            cadenaNumero[1] = inic[8];
+            cadenaNumero[2] = '\0';
+            estadoInicial = atoi(cadenaNumero);  
+        }
+        //capturar estados finales
+        char *final = strstr(line, "[shape=doublecircle];");
+        if (final) {
+            char cadenaNumero[3];
+            cadenaNumero[0] = line[0];
+            cadenaNumero[1] = line[1];
+            cadenaNumero[2] = '\0';
+            int estadoFinal = atoi(cadenaNumero);
+            estadosFinales[cantEstadosFinales] = estadoFinal;
+            cantEstadosFinales++;
+        }
 
-    // de 0 por lambda va a 1
-    Array toStatesArray2;
- 
-    int fromState = 0;
-    int symbol = LAMBDA;
-    toStatesArray2.a[0] = 2;
-    toStatesArray2.quantity = 1;
-    symbol = 0;
-    addTransitionToNDFA(&automaton2, fromState, toStatesArray2, symbol);
-    
-    toStatesArray2.a[0] = 3;
-    fromState = 2;
-    symbol = 1;
-    addTransitionToNDFA(&automaton2, fromState, toStatesArray2, symbol);
-    
+        //capturar transiciones
+        char *transition = strstr(line, "label");
+        if (transition) {
+            char cadenaNumero[3];
+            cadenaNumero[0] = line[0];
+            cadenaNumero[1] = line[1];
+            cadenaNumero[2] = '\0';
+            int from = atoi(cadenaNumero);
+            fromState = from;
+            
+            cadenaNumero[3];
+            cadenaNumero[0] = line[4];
+            cadenaNumero[1] = line[5];
+            cadenaNumero[2] = '\0';
+            int to = atoi(cadenaNumero);
 
-    fromState = 3;
-    symbol = 0;
-    addTransitionToNDFA(&automaton2, fromState, toStatesArray2, symbol);
+            char label[(15 - strlen(line) - 4)]; 
+            for (int i = 15; i < strlen(line) - 4; i++)
+            {
+                label[i - 15] = line[i];
+            }
+            label[strlen(line) - 4 - 15] = '\0';
 
+            Array labels; 
+            labels.quantity = 0;
+            char s[2];
+            s[0] = ',';
+            s[1] = '\0';
+            char* token = strtok(label, s);
+            while( token != NULL ) {
+                int label;
+                if (token[0] == '_')
+                {
+                    label = LAMBDA;
+                } else {
+                    cadenaNumero[0] = token[0];
+                    cadenaNumero[1] = token[1];
+                    cadenaNumero[2] = '\0';
+                    label = atoi(cadenaNumero);
+                }
+                labels.a[labels.quantity] = label;
+                labels.quantity++;
 
+                token = strtok(NULL, s);
+            }
+            
+            int flag = 0;
+            for (int i = 0; i < arrayOfTransitions.quantity; i++){
+                for (int j = 0; j < labels.quantity; j++){
+                    if (arrayOfTransitions.array[i].from == from && arrayOfTransitions.array[i].symbol == labels.a[j]){
+                        arrayOfTransitions.array[i].to.a[arrayOfTransitions.array[i].to.quantity] = to;
+                        arrayOfTransitions.array[i].to.quantity++;
+                        flag = 1;
+                    }
+                }
+            }
+            if (flag == 0){
+                for (int i = 0; i < labels.quantity; i++){
+                    Transition newTransition;
+                    newTransition.from = from;
+                    newTransition.symbol = labels.a[i];
+                    newTransition.to.a[0] = to;
+                    newTransition.to.quantity = 1;
+                    arrayOfTransitions.array[arrayOfTransitions.quantity] = newTransition;
+                    arrayOfTransitions.quantity++;
+                }
+            }
+            
+            
+        }
+        
+    }
+    fclose(file); 
 
-    toStatesArray2.a[0] = 1;
-    toStatesArray2.a[1] = 3;
-    toStatesArray2.quantity = 2;
-
-    fromState = 0;
-    symbol = LAMBDA;
-    addTransitionToNDFA(&automaton2, fromState, toStatesArray2, symbol);
-
-
-    //convertToDFA(automaton2);
-
-
-    Array toWatchLambdaClausure;
-    toWatchLambdaClausure.a[0] = 0;
-    toWatchLambdaClausure.a[1] = 3;
-    toWatchLambdaClausure.quantity = 2;
-
-    Array result = lambdaClausure(automaton2, toWatchLambdaClausure);
-
-
-    char *string = "011";
-    int x = belongsToLanguage(automaton2, string);
-
+    automaton2 = createNDFAAutomaton(cantEstados, cantSimbolos, estadoInicial, estadosFinales, cantEstadosFinales);
+    for (int i = 0; i < arrayOfTransitions.quantity; i++){
+        addTransitionToNDFA(&automaton2, arrayOfTransitions.array[i].from, arrayOfTransitions.array[i].to, arrayOfTransitions.array[i].symbol);
+    }
     return 0;
 }
 
@@ -467,25 +533,6 @@ int belongsToLanguage(NDFA automaton, char string[]) {
 }
 
 
-
-/*
-createFromFile()
-    filename = "automaton.dot"
-
-    FILE *archivo;
-    archivo = fopen("automaton.dot", "r");
-
-writeToFile(char filename[], AF automaton)
-    filename = "output.dot"
-
-./Main "automata.dot" "01010"
-
-./Main
-
-
-
-*/
-
 NDFA createAFNDFromFile() {
     NDFA automaton;
 
@@ -500,59 +547,8 @@ NDFA createAFNDFromFile() {
     while (fgets(line, 100, file) != NULL) {
         printf("%s", line);
     }
-    
-
-
-
-    /**
-    char linea[100]; // Buffer para almacenar la línea leída
-    while (fgets(linea, 100, archivo)) { // Leemos el archivo línea por línea
-        char *patron = "inic->"; // Patrón a buscar
-        char *posicion = strstr(linea, patron); // Buscamos la posición del patrón en la línea actual
-        if (posicion) { // Si se encontró el patrón
-            sscanf(posicion + strlen(patron), "%d", &num); // Extraemos el número que sigue al patrón
-            break; // Salimos del bucle si se encontró el patrón
-        }
-    }
-    */
-
 
     
     fclose(file);
     return automaton;
 }
-
-
-/*
-    Estado inicial: 
-        cadena = "inic->0"
-        char numberChar = cadena[7]
-        char cadenaNumero[2];
-        cadenaNumero[0] = numberChar;
-        cadenaNumero[1] = '\0';
-        int estadoInicial = atoi(cadenaNumero);    
-    Transicion: 
-        cadena = "0->1 [label="_"]"
-        
-        char numberChar = cadena[0]
-        char cadenaNumero[2];
-        cadenaNumero[0] = numberChar;
-        cadenaNumero[1] = '\0';
-        int from = atoi(cadenaNumero);
-        
-        char numberChar = cadena[3]
-        char cadenaNumero[2];
-        cadenaNumero[0] = numberChar;
-        cadenaNumero[1] = '\0';
-        int to = atoi(cadenaNumero);
-
-        char numberChar = cadena[13]
-        char cadenaNumero[2];
-        cadenaNumero[0] = numberChar;
-        cadenaNumero[1] = '\0';
-        int label = atoi(cadenaNumero);
-        
-    Estado final: 
-        cadena = "3[shape=doublecircle]"
-        int estadoFinal = cadena[0]
-*/

@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
+#define LAMBDA -100
 typedef struct List {
     int a[1000];
     int quantity;
@@ -31,41 +31,71 @@ void createAFNDFromFile() {
         printf("%s", line);
         char *inic = strstr(line, "inic->");
         if (inic) {
-            char numberChar = inic[7];
-            char cadenaNumero[2];
-            cadenaNumero[0] = numberChar;
-            cadenaNumero[1] = '\0';
+            char cadenaNumero[3];
+            cadenaNumero[0] = inic[7];
+            cadenaNumero[1] = inic[8];
+            cadenaNumero[2] = '\0';
             estadoInicial = atoi(cadenaNumero);  
         }
         char *final = strstr(line, "[shape=doublecircle];");
         if (final) {
-            char numberChar = line[0];
-            char cadenaNumero[2];
-            cadenaNumero[0] = numberChar;
-            cadenaNumero[1] = '\0';
-            int estadoFinal = atoi(cadenaNumero); 
+            char cadenaNumero[3];
+            cadenaNumero[0] = line[0];
+            cadenaNumero[1] = line[1];
+            cadenaNumero[2] = '\0';
+            int estadoFinal = atoi(cadenaNumero);
             estadosFinales.a[estadosFinales.quantity] = estadoFinal;
             estadosFinales.quantity++;
         }
         char *transition = strstr(line, "label");
         if (transition) {
-            char numberChar = line[0];
-            char cadenaNumero[2];
-            cadenaNumero[0] = numberChar;
-            cadenaNumero[1] = '\0';
+            char cadenaNumero[3];
+            cadenaNumero[0] = line[0];
+            cadenaNumero[1] = line[1];
+            cadenaNumero[2] = '\0';
             int from = atoi(cadenaNumero);
             
-            char numberChar = line[3];
-            char cadenaNumero[2];
-            cadenaNumero[0] = numberChar;
-            cadenaNumero[1] = '\0';
+            cadenaNumero[3];
+            cadenaNumero[0] = line[4];
+            cadenaNumero[1] = line[5];
+            cadenaNumero[2] = '\0';
             int to = atoi(cadenaNumero);
 
-            char numberChar = line[13];
-            char cadenaNumero[2];
-            cadenaNumero[0] = numberChar;
-            cadenaNumero[1] = '\0';
-            int label = atoi(cadenaNumero);
+            char label[(15 - strlen(line) - 4)]; 
+            for (int i = 15; i < strlen(line) - 4; i++)
+            {
+                label[i - 15] = line[i];
+            }
+            label[strlen(line) - 4 - 15] = '\0';
+
+            Array labels; 
+            labels.quantity = 0;
+            char s[2];
+            s[0] = ',';
+            s[1] = '\0';
+            char* token = strtok(label, s);
+            while( token != NULL ) {
+                int label;
+                if (token[0] == '_')
+                {
+                    label = LAMBDA;
+                } else {
+                    cadenaNumero[0] = token[0];
+                    cadenaNumero[1] = token[1];
+                    cadenaNumero[2] = '\0';
+                    label = atoi(cadenaNumero);
+                }
+                labels.a[labels.quantity] = label;
+                labels.quantity++;
+
+                token = strtok(NULL, s);
+            }
+            printf("From: %d, To: %d\n", from, to);
+            printf("Labels: ");
+            for (int i = 0; i < labels.quantity; i++) {
+                printf("%d ", labels.a[i]);
+            }
+            printf("\n");
         }
     }
 
@@ -77,4 +107,24 @@ void createAFNDFromFile() {
         printf("%d ", estadosFinales.a[i]);
     }
     fclose(file);
+
+
+
+    /* char st[4];
+    st[0] = '"';
+    st[1] = '\0';
+    char* token2 = strtok(line, st);
+    while(token2 != NULL) {
+        st[0] = '"';
+        st[1] = ']';
+        st[2] = ';';
+        st[3] = '\0';
+        token2 = strtok(NULL, st);
+        if (strcmp(token2, "\0") != 0) {
+            printf("token2: %s \n", token2 );
+        }
+        st[0] = '"';
+        st[1] = '\0';
+    } */
+
 }
