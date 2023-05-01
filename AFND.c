@@ -64,21 +64,26 @@ int belongsToLanguage(NDFA automaton, char string[]);
 
 Array stringToArray(char string[]);
 
-typedef struct Transition {
+typedef struct TransitionNDFA {
     int from;
     int symbol;
     Array to;
-} Transition;
+} TransitionNDFA;
 
-typedef struct ArrayOfTransitions {
-    Transition array[MAX_ARRAY];
+typedef struct ArrayOfTransitionsNDFA {
+    TransitionNDFA array[MAX_ARRAY];
     int quantity;
-} ArrayOfTransitions;
+} ArrayOfTransitionsNDFA;
 
-int main() {
+int main( int argc, char *argv[]) {
 
-    int cantEstados = 4;
-    int cantSimbolos = 2;
+    printf("Cantidad de estados: %s\n", argv[1]);
+    printf("Cantidad de simbolos: %s\n", argv[2]);
+    printf("Nombre del archivo: %s\n", argv[3]);
+    printf("Cadena a evaluar: %s\n", argv[4]);
+
+    int cantEstados = atoi(argv[1]);
+    int cantSimbolos = atoi(argv[2]);
     int estadoInicial;
     int estadosFinales[MAX_ARRAY];
     int cantEstadosFinales;
@@ -88,12 +93,12 @@ int main() {
     int symbol;
     Array toStatesArray;
     toStatesArray.quantity = 0;
-    ArrayOfTransitions arrayOfTransitions;
+    ArrayOfTransitionsNDFA arrayOfTransitions;
     arrayOfTransitions.quantity = 0;
 
     // leer archivo
     FILE *file;
-    file = fopen("automaton.dot", "r");
+    file = fopen(argv[3], "r");
     if (file == NULL) {
         printf("Error\n");
         exit(1);
@@ -181,7 +186,7 @@ int main() {
             }
             if (flag == 0){
                 for (int i = 0; i < labels.quantity; i++){
-                    Transition newTransition;
+                    TransitionNDFA newTransition;
                     newTransition.from = from;
                     newTransition.symbol = labels.a[i];
                     newTransition.to.a[0] = to;
@@ -201,6 +206,15 @@ int main() {
     for (int i = 0; i < arrayOfTransitions.quantity; i++){
         addTransitionToNDFA(&automaton2, arrayOfTransitions.array[i].from, arrayOfTransitions.array[i].to, arrayOfTransitions.array[i].symbol);
     }
+
+    char* string = argv[4];
+    int result = belongsToLanguage(automaton2, string);
+    if (result == 1) {
+        printf("La cadena es aceptada\n");
+    } else {
+        printf("La cadena no es aceptada\n");
+    }
+
     return 0;
 }
 
@@ -368,6 +382,7 @@ DFA convertToDFA(NDFA automaton) {
             Markable nextState;
             nextState.marked = 0;
             nextState.elements = lambdaClausure(automaton, move(automaton, current.elements, i));
+            mergeSort(&nextState.elements);
             if (elemInSet(setOfStatesSet, nextState) == 0) {
 
                 appendSorted(&setOfStatesSet, nextState);
@@ -378,8 +393,17 @@ DFA convertToDFA(NDFA automaton) {
                 }
 
             }
+            // Search the index of the nextState in the setOfStatesSet using areEqual()
+            int toState;
+            for(int j = 0; j < setOfStatesSet.quantity; j++){
+                mergeSort(&nextState.elements);
+                if(areEquals(setOfStatesSet.array[j].elements, nextState.elements) == 1){
+                    toState = j;
+                }
+            }
+
             if(nextState.elements.quantity > 0){
-                result.delta[lastMarked+1][i] = setOfStatesSet.quantity - 1;
+                result.delta[lastMarked+1][i] = toState;
             }
         }
         lastMarked++;
