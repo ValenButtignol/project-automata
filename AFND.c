@@ -215,6 +215,70 @@ int main( int argc, char *argv[]) {
         printf("La cadena no es aceptada\n");
     }
 
+    
+    // Escritura  
+    FILE *file2;
+    file2 = fopen("automatonWritten.dot", "r");
+    if (file2 == NULL) {
+        printf("Error\n");
+        exit(1);
+    }
+
+    fprintf(file2, "digraph{\n");
+    fprintf(file2, "\tinic[shape=point];\n");
+    if (automaton2.initialState < 10){
+        fprintf(file2, "inic->0%d;\n", automaton2.initialState);
+    }
+    else {
+        fprintf(file2, "inic->%d;\n", automaton2.initialState);
+    }
+
+    // Escribir las transiciones del automata
+    for (int i = 0; i < automaton2.states; i++){
+        for (int j = 0; j < automaton2.symbols; j++){
+            for (int k = 0; k < automaton2.states; k++){
+                if (automaton2.delta[i][j][k] != EMPTY){
+                    if (i < 10){
+                        fprintf(file2, "0%d->", i);
+                    }
+                    else {
+                        fprintf(file2, "%d->", i);
+                    }
+                    if (k < 10){
+                        fprintf(file2, "0%d ",k);
+                    }
+                    else {
+                        fprintf(file2, "%d ",k);
+                    }
+
+                    fprintf(file2, "[label=\"");
+                    
+                    if (j != LAMBDA){
+                        fprintf(file2, "%d\"];\n", j);
+                    } 
+                    else {
+                        fprintf(file2, "_\"];\n");
+                    }
+                }
+            }
+        }
+    }
+
+    // Escribir los estados finales
+    for(int i = 0; i < automaton2.quantityFinalStates; i++) {
+        if (automaton2.finalStates[i] > 10){
+            fprintf(file2, "0%d [shape=doublecircle];\n", automaton2.finalStates[i]);
+        }
+        else {
+            fprintf(file2, "%d [shape=doublecircle];\n", automaton2.finalStates[i]);
+        }
+    }
+
+
+    fprintf(file2, "}\n");
+
+    fclose(file2);
+    
     return 0;
 }
 
