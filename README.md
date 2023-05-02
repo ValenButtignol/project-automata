@@ -1,7 +1,7 @@
 # ProyectAutomatons
 
 Para ejecutar: (Sería el main con el resto de archivos .c)
-gcc main.c data_structures/array.c data_structures/finite_automaton.c data_structures/markable.c algorithms/convert_ndfa_to_dfa.c algorithms/belongs_to_language utils/utils.c -o main 
+gcc main.c structures/array.c structures/finite_automaton.c structures/markable.c algorithms/convert_ndfa_to_dfa.c algorithms/belongs_to_language -o main 
 
 
 Creo que anda todo menos el belongs_to_language.

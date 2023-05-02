@@ -1,4 +1,3 @@
-#include "../utils/constants.h"
 #include "array.h"
 
 /**
@@ -35,7 +34,6 @@ typedef struct DeterministicFiniteAutomaton {
     Array finalStates; 
 } DFA;
 
-
 /**
  * This function creates a non deterministic finite automaton. It uses the arrayCopy function from array.c.
  * 
@@ -58,3 +56,13 @@ NDFA createNDFAAutomaton(int num_states, int num_symbols, int initialState, Arra
  * @param symbol The symbol of the transition.
  */
 void addTransitionToNDFA(NDFA *automaton, int fromState, Array toStates, int symbol);
+
+
+/**
+ * This functions checks if a given NDFA automaton contains a given array as a final state.
+ * 
+ * @param automaton The automaton to check.
+ * @param states The array of states to check.
+ * @return TRUE if the automaton contains the array as a final state, FALSE otherwise.
+*/
+int containsFinalState(NDFA automaton, Array states);

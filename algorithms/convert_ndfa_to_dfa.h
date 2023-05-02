@@ -1,4 +1,4 @@
-#include "../data_structures/finite_automaton.h"
+#include "../structures/markable.h"
 
 /**
  * This function calculates the lambda clausure of a set of states.

@@ -1,4 +1,8 @@
-#include "../utils/constants.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+#include "../constants.h"
 
 typedef struct Array {
     int a[MAX_ARRAY];

@@ -1,6 +1,4 @@
 #include "belongs_to_language.h"
-#include "../data_structures/finite_automaton.c"
-
 
 /**
  * This function checks if a string belongs to the language of a given NDFA automaton.
@@ -31,4 +29,24 @@ int belongsToLanguage(NDFA automaton, char string[]) {
     }
 
     return FALSE;
+}
+
+
+/**
+ * This function converts a string to an array of integers.
+ * 
+ * @param string The string to convert.
+ * @return The array of integers.
+*/
+Array stringToArray(char string[]){
+    Array result;
+    int length = strlen(string);
+    for (int i = 0; i < length; i++){
+        char stringNumber[2];
+        stringNumber[0] = string[i];
+        stringNumber[1] = '\0';
+        result.a[i] = atoi(stringNumber);
+        result.length++;
+    }
+    return result;
 }

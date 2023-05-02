@@ -1,5 +1,4 @@
-#include <stdio.h>
-#include "data_structures/finite_automaton.h"
+#include "algorithms/belongs_to_language.h"
 
 int main() {
 

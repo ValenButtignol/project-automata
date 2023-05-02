@@ -1,6 +1,4 @@
-#include <stdio.h>
-#include "../data_structures/finite_automaton.h"
-#include "../data_structures/markable.h"
+#include "convert_ndfa_to_dfa.h"
 
 /**
  * This function calculates the lambda clausure of a set of states. The lambda clausure is the set 

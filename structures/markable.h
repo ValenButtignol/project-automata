@@ -1,5 +1,4 @@
-#include <stdio.h>
-#include "array.h"
+#include "finite_automaton.h"
 
 /**
  * This struct represents a markable set.

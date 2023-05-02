@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include "finite_automaton.h"
 
 /**
@@ -43,4 +42,24 @@ void addTransitionToNDFA(NDFA *automaton, int fromState, Array toStates, int sym
     for (int i = 0; i < toStates.length; i++) {
         automaton->delta[fromState][symbol][i] = toStates.a[i];
     }
+}
+
+
+/**
+ * This functions checks if a given NDFA automaton contains a given array as a final state.
+ * 
+ * @param automaton The automaton to check.
+ * @param states The array of states to check.
+ * @return TRUE if the automaton contains the array as a final state, FALSE otherwise.
+*/
+int containsFinalState(NDFA automaton, Array states) {
+    int result = FALSE;
+    for (int i = 0; i < states.length && result == FALSE; i++) {
+        for (int j = 0; j < automaton.finalStates.length && result == FALSE; j++) {
+            if (states.a[i] == automaton.finalStates.a[j]) {
+                result = TRUE;
+            }
+        }
+    }
+    return result;
 }
