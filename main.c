@@ -1,71 +1,5 @@
 #include "algorithms/read_and_write.h"
 
-/* int main() {
-
-    int numStates = 4;
-    int numSymbols = 2;
-    int initialState = 0;
-    Array finalStates;
-    finalStates.a[0] = 3;
-    finalStates.length = 1;
-    
-    NDFA automaton = createNDFAAutomaton(numStates, numSymbols, initialState, finalStates);
-    printf("NDFA created\n");
-
-    Array toStatesArray;
-    int fromState = 0;
-    int symbol = LAMBDA;
-    toStatesArray.a[0] = 2;
-    toStatesArray.length = 1;
-    symbol = 0;
-    addTransitionToNDFA(&automaton, fromState, toStatesArray, symbol);
-
-    toStatesArray.a[0] = 3;
-    fromState = 2;
-    symbol = 1;
-    addTransitionToNDFA(&automaton, fromState, toStatesArray, symbol);
-
-    toStatesArray.a[0] = 3;
-    fromState = 3;
-    symbol = 0;
-    addTransitionToNDFA(&automaton, fromState, toStatesArray, symbol);
-
-    toStatesArray.a[0] = 1;
-    toStatesArray.a[1] = 3;
-    toStatesArray.length = 2;
-    fromState = 0;
-    symbol = LAMBDA;
-    addTransitionToNDFA(&automaton, fromState, toStatesArray, symbol);
-
-
-
-    printf("States: %d\n", automaton.states);
-    printf("Symbols: %d\n", automaton.symbols);
-    printf("Initial state: %d\n", automaton.initialState);
-    printf("Final states: ");
-    for (int i = 0; i < automaton.finalStates.length; i++) {
-        printf("%d ", automaton.finalStates.a[i]);
-    }
-    printf("\n");
-
-    printf("Delta:\n");
-    for (int i = 0; i < automaton.states; i++) {
-        for (int j = 0; j < automaton.symbols; j++) {
-            printf("%d -> %d ->: [ ", i, j);
-            for (int k = 0; k < automaton.states; k++) {
-                if (automaton.delta[i][j][k] != EMPTY) {
-                    printf("%d ", automaton.delta[i][j][k]);
-                }
-            }
-            printf("]\n");
-        }
-    }
-}
- */
-
-
-
-
 int main( int argc, char *argv[]) {
 
     printf("Amount of states for the automaton: %s\n", argv[1]);
@@ -76,10 +10,12 @@ int main( int argc, char *argv[]) {
 
     int numStates = atoi(argv[1]);
     int numSymbols = atoi(argv[2]);
-    char* fileName = argv[3];
+    char* inputFileName = argv[3];
     char* string = argv[4];
+    char* outputFileName = argv[5];
 
-    // createFromFile(fileName; cantEstados; numSymbols)    
+
+    // createFromFile(inputFileName; cantEstados; numSymbols)    
     NDFA ndfa;
 
 /********************************* ACA EMPIEZA LA LECTURA *****************************************/
@@ -97,7 +33,7 @@ int main( int argc, char *argv[]) {
 
     // leer archivo
     FILE *file;
-    file = fopen(fileName, "r");
+    file = fopen(inputFileName, "r");
     if (file == NULL) {
         printf("Error\n");
         exit(1);
@@ -214,15 +150,109 @@ int main( int argc, char *argv[]) {
 
 
 
-
     int result = belongsToLanguage(ndfa, string);
     if (result == TRUE) {
-        printf("La cadena es aceptada\n");
+        printf("The string is accepted.\n");
     } else {
-        printf("La cadena no es aceptada\n");
+        printf("The string is not accepted.\n");
     }
+
+
+
+    printf("States: %d\n", ndfa.states);
+    printf("Symbols: %d\n", ndfa.symbols);
+    printf("Initial state: %d\n", ndfa.initialState);
+    printf("Final states: ");
+    for (int i = 0; i < ndfa.finalStates.length; i++) {
+        printf("%d ", ndfa.finalStates.a[i]);
+    }
+    printf("\n");
+
+    printf("Delta:\n");
+    for (int i = 0; i < ndfa.states; i++) {
+        for (int j = 0; j < ndfa.symbols; j++) {
+            printf("%d -> %d ->: [ ", i, j);
+            for (int k = 0; k < ndfa.states; k++) {
+                if (ndfa.delta[i][j][k] != EMPTY) {
+                    printf("%d ", ndfa.delta[i][j][k]);
+                }
+            }
+            printf("]\n");
+        }
+    }
+
+
+
+/****************************** ACA EMPIEZA LA ESCRITURA ***********************************/
+
+    // Escritura  
+    FILE *file2;
+    file2 = fopen(outputFileName, "w");
+    if (file2 == NULL) {
+        printf("Error\n");
+        exit(1);
+    }
+
+    // Write the header of the file.
+    fprintf(file2, "digraph{\n");
+    fprintf(file2, "inic[shape=point];\n");
+
+    // Write the initial state.
+    if (ndfa.initialState < 10){
+        fprintf(file2, "inic->0%d;\n", ndfa.initialState);
+    } else {
+        fprintf(file2, "inic->%d;\n", ndfa.initialState);
+    }
+
+    // Write the transitions.
+    for (int i = 0; i < ndfa.states; i++) {
+        for (int j = 0; j < ndfa.symbols; j++) {
+            for (int k = 0; k < ndfa.states; k++) {
+                if (ndfa.delta[i][j][k] != EMPTY) {
+                    // Write the fromState.
+                    if (i < 10){
+                        fprintf(file2, "0%d->", i);
+                    } else {
+                        fprintf(file2, "%d->", i);
+                    }
+
+                    // Write the toState.
+                    if (k < 10){
+                        fprintf(file2, "0%d ",k);
+                    } else {
+                        fprintf(file2, "%d ",k);
+                    }
+
+                    fprintf(file2, "[label=\"");
+                    
+                    if (j != LAMBDA){
+                        if (j < 10) {
+                            fprintf(file2, "0%d\"];\n", j);
+                        } else {
+                            fprintf(file2, "%d\"];\n", j);
+                        }
+
+                    } else if (j == LAMBDA) {
+                        fprintf(file2, "_\"];\n");
+                    }
+                }
+            }
+        }
+    }
+
+    // Escribir los estados finales
+    for(int i = 0; i < ndfa.finalStates.length; i++) {
+        if (ndfa.finalStates.a[i] < 10){
+            fprintf(file2, "0%d[shape=doublecircle];\n", ndfa.finalStates.a[i]);
+        }
+        else {
+            fprintf(file2, "%d[shape=doublecircle];\n", ndfa.finalStates.a[i]);
+        }
+    }
+    fprintf(file2, "}\n");
+
+    fclose(file2);
+/****************************** ACA TERMINA LA ESCRITURA ***********************************/
+
     return 0;
-
-
-
 }
