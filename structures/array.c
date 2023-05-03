@@ -9,7 +9,7 @@
  */
 int areEquals(Array array, Array otherArray) {
     int flag = TRUE;
-    for (int i = 0; i < array.length && flag == 1; i++) {
+    for (int i = 0; i < array.length && flag == TRUE; i++) {
         if (array.a[i] != otherArray.a[i]){
             flag = FALSE;
         }
@@ -26,8 +26,8 @@ int areEquals(Array array, Array otherArray) {
 void arrayCopy(Array* array, Array copyArray) {
     for (int i = 0; i < copyArray.length; i++) {
         array->a[i] = copyArray.a[i];
+        array->length++;
     }
-    array->length = copyArray.length;
 }
 
 /**

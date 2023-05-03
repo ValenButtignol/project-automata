@@ -7,7 +7,7 @@
  * @param string The string to check.
  * @return TRUE if the string belongs to the language of the automaton, FALSE otherwise.
 */
-int belongsToLanguage(NDFA automaton, char string[]) {
+int belongsToLanguage(NDFA automaton, char *string) {
     Array stringArray = stringToArray(string);
     DFA dfa = convertToDFA(automaton);
     int count = 0;

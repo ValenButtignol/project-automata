@@ -1,7 +1,7 @@
 #include "finite_automaton.h"
 
 /**
- * This function creates a non deterministic finite automaton. It uses the arrayCopy function from array.c.
+ * This function creates a non deterministic finite automaton.
  * 
  * @param numStates The number of states.
  * @param numSymbols The number of symbols.
@@ -9,13 +9,13 @@
  * @param finalStates The set of final states of the automaton.
  * @return The non deterministic finite automaton.
  * 
- * @ref arrayCopy
  */
 NDFA createNDFAAutomaton(int numStates, int numSymbols, int initialState, Array finalStates) {
     NDFA automaton;
     automaton.states = numStates;
     automaton.symbols = numSymbols;
     automaton.initialState = initialState;
+    automaton.finalStates.length = 0;
 
     for (int i = 0; i < numStates; i++) {
         for (int j = 0; j < numSymbols; j++) {

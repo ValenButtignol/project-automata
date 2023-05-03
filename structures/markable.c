@@ -11,13 +11,11 @@ void mark(SetOfMarkableArray *set, int idxOfArray) {
 }
 
 /**
- * This function checks if a markable array is in a set of markable arrays. It uses the areEquals function from array.c.
+ * This function checks if a markable array is in a set of markable arrays.
  * 
  * @param set The set of markable arrays.
  * @param array The markable array.
  * @return 1 if the array is in the set, 0 otherwise.
- * 
- * @ref areEquals
 */
 int elemInSet(SetOfMarkableArray set, MarkableArray array) {
     
@@ -39,13 +37,10 @@ int elemInSet(SetOfMarkableArray set, MarkableArray array) {
 }
 
 /**
- * This function appends a sorted markable array to a set of markable arrays. It uses the arrayCopy and sort functions from array.c.
+ * This function appends a sorted markable array to a set of markable arrays.
  *  
  * @param set The set of markable arrays.
  * @param array The markable array.
- * 
- * @ref arrayCopy
- * @ref sort
 */
 void appendSorted(SetOfMarkableArray *set, MarkableArray array) {
     arrayCopy(&set->mArrays[set->length].elements, array.elements);

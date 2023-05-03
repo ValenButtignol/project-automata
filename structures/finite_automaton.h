@@ -14,7 +14,7 @@ typedef struct NonDeterministicFiniteAutomaton {
     int symbols;       
     int delta[MAX_ARRAY][MAX_ARRAY][MAX_ARRAY];   
     int initialState; 
-    Array finalStates; 
+    Array finalStates;
 } NDFA;
 
 /**
@@ -35,15 +35,13 @@ typedef struct DeterministicFiniteAutomaton {
 } DFA;
 
 /**
- * This function creates a non deterministic finite automaton. It uses the arrayCopy function from array.c.
+ * This function creates a non deterministic finite automaton.
  * 
  * @param num_states The number of states.
  * @param num_symbols The number of symbols.
  * @param initialState The initial state of the automaton.
  * @param finalStates The set of final states of the automaton.
  * @return The non deterministic finite automaton.
- * 
- * @ref arrayCopy
  */
 NDFA createNDFAAutomaton(int num_states, int num_symbols, int initialState, Array finalStates);
 

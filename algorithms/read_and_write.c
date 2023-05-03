@@ -1,88 +1,8 @@
-#include "algorithms/read_and_write.h"
+#include "read_and_write.h"
 
-/* int main() {
+NDFA createFromFile(FILE *file, int numStates, int numSymbols) {
 
-    int numStates = 4;
-    int numSymbols = 2;
-    int initialState = 0;
-    Array finalStates;
-    finalStates.a[0] = 3;
-    finalStates.length = 1;
-    
-    NDFA automaton = createNDFAAutomaton(numStates, numSymbols, initialState, finalStates);
-    printf("NDFA created\n");
-
-    Array toStatesArray;
-    int fromState = 0;
-    int symbol = LAMBDA;
-    toStatesArray.a[0] = 2;
-    toStatesArray.length = 1;
-    symbol = 0;
-    addTransitionToNDFA(&automaton, fromState, toStatesArray, symbol);
-
-    toStatesArray.a[0] = 3;
-    fromState = 2;
-    symbol = 1;
-    addTransitionToNDFA(&automaton, fromState, toStatesArray, symbol);
-
-    toStatesArray.a[0] = 3;
-    fromState = 3;
-    symbol = 0;
-    addTransitionToNDFA(&automaton, fromState, toStatesArray, symbol);
-
-    toStatesArray.a[0] = 1;
-    toStatesArray.a[1] = 3;
-    toStatesArray.length = 2;
-    fromState = 0;
-    symbol = LAMBDA;
-    addTransitionToNDFA(&automaton, fromState, toStatesArray, symbol);
-
-
-
-    printf("States: %d\n", automaton.states);
-    printf("Symbols: %d\n", automaton.symbols);
-    printf("Initial state: %d\n", automaton.initialState);
-    printf("Final states: ");
-    for (int i = 0; i < automaton.finalStates.length; i++) {
-        printf("%d ", automaton.finalStates.a[i]);
-    }
-    printf("\n");
-
-    printf("Delta:\n");
-    for (int i = 0; i < automaton.states; i++) {
-        for (int j = 0; j < automaton.symbols; j++) {
-            printf("%d -> %d ->: [ ", i, j);
-            for (int k = 0; k < automaton.states; k++) {
-                if (automaton.delta[i][j][k] != EMPTY) {
-                    printf("%d ", automaton.delta[i][j][k]);
-                }
-            }
-            printf("]\n");
-        }
-    }
-}
- */
-
-
-
-
-int main( int argc, char *argv[]) {
-
-    printf("Amount of states for the automaton: %s\n", argv[1]);
-    printf("Amount of alphabet symbols: %s\n", argv[2]);
-    printf("Name of the input file: %s\n", argv[3]);
-    printf("String to evaluate: %s\n", argv[4]);
-    printf("Name of the output file: %s\n", argv[5]);
-
-    int numStates = atoi(argv[1]);
-    int numSymbols = atoi(argv[2]);
-    char* fileName = argv[3];
-    char* string = argv[4];
-
-    // createFromFile(fileName; cantEstados; numSymbols)    
     NDFA ndfa;
-
-/********************************* ACA EMPIEZA LA LECTURA *****************************************/
 
     // This is the data to capture from the file.
     Array finalStates;
@@ -95,16 +15,11 @@ int main( int argc, char *argv[]) {
     ArrayOfTransitionsNDFA arrayOfTransitions;
     arrayOfTransitions.length = 0;
 
-    // leer archivo
-    FILE *file;
-    file = fopen(fileName, "r");
-    if (file == NULL) {
-        printf("Error\n");
-        exit(1);
-    }
+    
 
     char line[100];
     while (fgets(line, 100, file) != NULL) {
+
         // We capture the lines with the pattern "inic->", while we are reading the file.
         char *inic = strstr(line, "inic->");
         if (inic) {
@@ -206,23 +121,7 @@ int main( int argc, char *argv[]) {
     ndfa = createNDFAAutomaton(numStates, numSymbols, initialState, finalStates);
     for (int i = 0; i < arrayOfTransitions.length; i++){
         addTransitionToNDFA(&ndfa, arrayOfTransitions.array[i].from, arrayOfTransitions.array[i].to, arrayOfTransitions.array[i].symbol);
-    }   
-    
-
-
-/********************************* ACA TERMINA LA LECTURA *****************************************/
-
-
-
-
-    int result = belongsToLanguage(ndfa, string);
-    if (result == TRUE) {
-        printf("La cadena es aceptada\n");
-    } else {
-        printf("La cadena no es aceptada\n");
     }
-    return 0;
 
-
-
+    return ndfa;
 }

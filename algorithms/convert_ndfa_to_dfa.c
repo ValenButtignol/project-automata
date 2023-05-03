@@ -157,7 +157,8 @@ DFA convertToDFA(NDFA automaton) {
             MarkableArray nextState;
             nextState.isMarked = FALSE;
             nextState.elements = lambdaClausure(automaton, move(automaton, current.elements, i));
-            
+            sort(&nextState.elements);
+
             // If the lambda clausure of the move of the current state with the symbol is not in the set, add it.
             if (elemInSet(set, nextState) == FALSE) {
                 appendSorted(&set, nextState);
@@ -169,9 +170,19 @@ DFA convertToDFA(NDFA automaton) {
                 }
 
             }
+            
+            int toState;
+            // Search the index of the nextState in the set.
+            for (int j = 0; j < set.length; j++) {
+                sort(&nextState.elements);
+                if (areEquals(set.mArrays[j].elements, nextState.elements) == TRUE) {
+                    toState = j;
+                }
+            }
+
             // Add the transition to the result automaton.
             if (nextState.elements.length > 0) {
-                result.delta[lastMarked+1][i] = set.length - 1;
+                result.delta[lastMarked+1][i] = toState;
             }
         }
         lastMarked++;
