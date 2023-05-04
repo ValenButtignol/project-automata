@@ -125,3 +125,83 @@ NDFA createFromFile(FILE *file, int numStates, int numSymbols) {
 
     return ndfa;
 }
+
+
+
+void writeToFile(FILE *file, NDFA ndfa) {
+    // Write the header of the file.
+    fprintf(file, "digraph{\n");
+    fprintf(file, "inic[shape=point];\n");
+
+    // Write the initial state.
+    if (ndfa.initialState < 10){
+        fprintf(file, "inic->0%d;\n", ndfa.initialState);
+    } else {
+        fprintf(file, "inic->%d;\n", ndfa.initialState);
+    }
+
+    // Write the transitions.
+    for (int i = 0; i < ndfa.states; i++) {
+        for (int k = 0; k < ndfa.states; k++) {     // CAREFUL! This is k, not j. k is for the toStates and j is for the symbols.
+            for (int j = 0; j < ndfa.symbols; j++) {
+                if (ndfa.delta[i][j][k] != EMPTY) {
+                    // Write the fromState.
+                    if (i < 10){
+                        fprintf(file, "0%d->", i);
+                    } else {
+                        fprintf(file, "%d->", i);
+                    }
+
+                    // Write the toState.
+                    if (ndfa.delta[i][j][k] < 10){
+                        fprintf(file, "0%d ", ndfa.delta[i][j][k]);
+                    } else {
+                        fprintf(file, "%d ", ndfa.delta[i][j][k]);
+                    }
+
+                    fprintf(file, "[label=\"");
+                    
+                    // ATENTION: This will add all the labels different of LAMBDA, because ndfa.symbols never includes LAMBDA.
+                    if (j < 10) {
+                        fprintf(file, "0%d\"];\n", j);
+                    } else {
+                        fprintf(file, "%d\"];\n", j);
+                    }
+
+                    
+                }
+            }
+            // Now we check for any LAMBDA transition.
+            if (ndfa.delta[i][LAMBDA][k] != EMPTY) {
+
+                // Write the fromState.
+                if (i < 10){
+                    fprintf(file, "0%d->", i);
+                } else {
+                    fprintf(file, "%d->", i);
+                }
+
+                // Write the toState.
+                if (ndfa.delta[i][LAMBDA][k] < 10){
+                    fprintf(file, "0%d ",ndfa.delta[i][LAMBDA][k]);
+                } else {
+                    fprintf(file, "%d ",ndfa.delta[i][LAMBDA][k]);
+                }
+
+                fprintf(file, "[label=\"");
+                fprintf(file, "_\"];\n");
+            }
+        }
+    }
+
+    // Escribir los estados finales
+    for (int i = 0; i < ndfa.finalStates.length; i++) {
+        if (ndfa.finalStates.a[i] < 10){
+            fprintf(file, "0%d[shape=doublecircle];\n", ndfa.finalStates.a[i]);
+        }
+        else {
+            fprintf(file, "%d[shape=doublecircle];\n", ndfa.finalStates.a[i]);
+        }
+    }
+    fprintf(file, "}\n");
+}

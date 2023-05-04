@@ -14,4 +14,4 @@ typedef struct ArrayOfTransitionsNDFA {
 
 NDFA createFromFile(FILE *file, int numStates, int numSymbols);
 
-void writeToFile(char *filename, NDFA ndfa);
+void writeToFile(FILE *file, NDFA ndfa);
