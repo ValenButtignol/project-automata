@@ -171,13 +171,14 @@ int main( int argc, char *argv[]) {
     printf("Delta:\n");
     for (int i = 0; i < ndfa.states; i++) {
         for (int j = 0; j < ndfa.symbols; j++) {
-            printf("%d -> %d ->: [ ", i, j);
             for (int k = 0; k < ndfa.states; k++) {
                 if (ndfa.delta[i][j][k] != EMPTY) {
-                    printf("%d ", ndfa.delta[i][j][k]);
+                    printf("From: %d To: %d Symbol: %d\n", i, k, j);
+                }
+                if (ndfa.delta[i][LAMBDA][k] != EMPTY) {
+                    printf("From: %d To: %d Symbol: %d\n", i, k, LAMBDA);
                 }
             }
-            printf("]\n");
         }
     }
 
@@ -206,8 +207,8 @@ int main( int argc, char *argv[]) {
 
     // Write the transitions.
     for (int i = 0; i < ndfa.states; i++) {
-        for (int j = 0; j < ndfa.symbols; j++) {
-            for (int k = 0; k < ndfa.states; k++) {
+        for (int k = 0; k < ndfa.states; k++) {     // CAREFUL! This is k, not j. k is for the toStates and j is for the symbols.
+            for (int j = 0; j < ndfa.symbols; j++) {
                 if (ndfa.delta[i][j][k] != EMPTY) {
                     // Write the fromState.
                     if (i < 10){
@@ -217,31 +218,49 @@ int main( int argc, char *argv[]) {
                     }
 
                     // Write the toState.
-                    if (k < 10){
-                        fprintf(file2, "0%d ",k);
+                    if (ndfa.delta[i][j][k] < 10){
+                        fprintf(file2, "0%d ", ndfa.delta[i][j][k]);
                     } else {
-                        fprintf(file2, "%d ",k);
+                        fprintf(file2, "%d ", ndfa.delta[i][j][k]);
                     }
 
                     fprintf(file2, "[label=\"");
                     
-                    if (j != LAMBDA){
-                        if (j < 10) {
-                            fprintf(file2, "0%d\"];\n", j);
-                        } else {
-                            fprintf(file2, "%d\"];\n", j);
-                        }
-
-                    } else if (j == LAMBDA) {
-                        fprintf(file2, "_\"];\n");
+                    // ATENTION: This will add all the labels different of LAMBDA, because ndfa.symbols never includes LAMBDA.
+                    if (j < 10) {
+                        fprintf(file2, "0%d\"];\n", j);
+                    } else {
+                        fprintf(file2, "%d\"];\n", j);
                     }
+
+                    
                 }
+            }
+            // Now we check for any LAMBDA transition.
+            if (ndfa.delta[i][LAMBDA][k] != EMPTY) {
+
+                // Write the fromState.
+                if (i < 10){
+                    fprintf(file2, "0%d->", i);
+                } else {
+                    fprintf(file2, "%d->", i);
+                }
+
+                // Write the toState.
+                if (ndfa.delta[i][LAMBDA][k] < 10){
+                    fprintf(file2, "0%d ",ndfa.delta[i][LAMBDA][k]);
+                } else {
+                    fprintf(file2, "%d ",ndfa.delta[i][LAMBDA][k]);
+                }
+
+                fprintf(file2, "[label=\"");
+                fprintf(file2, "_\"];\n");
             }
         }
     }
 
     // Escribir los estados finales
-    for(int i = 0; i < ndfa.finalStates.length; i++) {
+    for (int i = 0; i < ndfa.finalStates.length; i++) {
         if (ndfa.finalStates.a[i] < 10){
             fprintf(file2, "0%d[shape=doublecircle];\n", ndfa.finalStates.a[i]);
         }
