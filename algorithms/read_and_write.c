@@ -1,4 +1,6 @@
 #include "read_and_write.h"
+#include <stdio.h>
+
 
 NDFA createFromFile(FILE *file, int numStates, int numSymbols) {
 
@@ -128,16 +130,27 @@ NDFA createFromFile(FILE *file, int numStates, int numSymbols) {
 
 
 
-void writeToFile(FILE *file, NDFA ndfa) {
+void writeToFile(NDFA ndfa) {
+
+    FILE *file2;
+    char* file2Name = "output.dot";
+
+    file2 = fopen(file2Name, "w");
+
+    if (file2 == NULL) {
+        printf("File creating error.\n");
+        exit(1);
+    }
+
     // Write the header of the file.
-    fprintf(file, "digraph{\n");
-    fprintf(file, "inic[shape=point];\n");
+    fprintf(file2, "digraph{\n");
+    fprintf(file2, "inic[shape=point];\n");
 
     // Write the initial state.
     if (ndfa.initialState < 10){
-        fprintf(file, "inic->0%d;\n", ndfa.initialState);
+        fprintf(file2, "inic->0%d;\n", ndfa.initialState);
     } else {
-        fprintf(file, "inic->%d;\n", ndfa.initialState);
+        fprintf(file2, "inic->%d;\n", ndfa.initialState);
     }
 
     // Write the transitions.
@@ -147,25 +160,25 @@ void writeToFile(FILE *file, NDFA ndfa) {
                 if (ndfa.delta[i][j][k] != EMPTY) {
                     // Write the fromState.
                     if (i < 10){
-                        fprintf(file, "0%d->", i);
+                        fprintf(file2, "0%d->", i);
                     } else {
-                        fprintf(file, "%d->", i);
+                        fprintf(file2, "%d->", i);
                     }
 
                     // Write the toState.
                     if (ndfa.delta[i][j][k] < 10){
-                        fprintf(file, "0%d ", ndfa.delta[i][j][k]);
+                        fprintf(file2, "0%d ", ndfa.delta[i][j][k]);
                     } else {
-                        fprintf(file, "%d ", ndfa.delta[i][j][k]);
+                        fprintf(file2, "%d ", ndfa.delta[i][j][k]);
                     }
 
-                    fprintf(file, "[label=\"");
+                    fprintf(file2, "[label=\"");
                     
                     // ATENTION: This will add all the labels different of LAMBDA, because ndfa.symbols never includes LAMBDA.
                     if (j < 10) {
-                        fprintf(file, "0%d\"];\n", j);
+                        fprintf(file2, "0%d\"];\n", j);
                     } else {
-                        fprintf(file, "%d\"];\n", j);
+                        fprintf(file2, "%d\"];\n", j);
                     }
 
                     
@@ -176,32 +189,33 @@ void writeToFile(FILE *file, NDFA ndfa) {
 
                 // Write the fromState.
                 if (i < 10){
-                    fprintf(file, "0%d->", i);
+                    fprintf(file2, "0%d->", i);
                 } else {
-                    fprintf(file, "%d->", i);
+                    fprintf(file2, "%d->", i);
                 }
 
                 // Write the toState.
                 if (ndfa.delta[i][LAMBDA][k] < 10){
-                    fprintf(file, "0%d ",ndfa.delta[i][LAMBDA][k]);
+                    fprintf(file2, "0%d ",ndfa.delta[i][LAMBDA][k]);
                 } else {
-                    fprintf(file, "%d ",ndfa.delta[i][LAMBDA][k]);
+                    fprintf(file2, "%d ",ndfa.delta[i][LAMBDA][k]);
                 }
 
-                fprintf(file, "[label=\"");
-                fprintf(file, "_\"];\n");
+                fprintf(file2, "[label=\"");
+                fprintf(file2, "_\"];\n");
             }
         }
     }
 
-    // Escribir los estados finales
+    // Write the final states
     for (int i = 0; i < ndfa.finalStates.length; i++) {
         if (ndfa.finalStates.a[i] < 10){
-            fprintf(file, "0%d[shape=doublecircle];\n", ndfa.finalStates.a[i]);
+            fprintf(file2, "0%d[shape=doublecircle];\n", ndfa.finalStates.a[i]);
         }
         else {
-            fprintf(file, "%d[shape=doublecircle];\n", ndfa.finalStates.a[i]);
+            fprintf(file2, "%d[shape=doublecircle];\n", ndfa.finalStates.a[i]);
         }
     }
-    fprintf(file, "}\n");
+    fprintf(file2, "}\n");
+    fclose(file2);
 }

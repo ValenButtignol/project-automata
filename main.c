@@ -6,7 +6,7 @@ int main( int argc, char *argv[]) {
     printf("Amount of alphabet symbols: %s\n", argv[2]);
     printf("Name of the input file: %s\n", argv[3]);
     printf("String to evaluate: %s\n", argv[4]);
-    printf("Name of the output file: %s\n", argv[5]);
+    printf("Name of the output file: output.dot\n");
 
     int numStates = atoi(argv[1]);
     int numSymbols = atoi(argv[2]);
@@ -18,7 +18,7 @@ int main( int argc, char *argv[]) {
     // createFromFile(inputFileName; cantEstados; numSymbols)    
     NDFA ndfa;
 
-/********************************* ACA EMPIEZA LA LECTURA *****************************************/
+/*********** ACA EMPIEZA LA LECTURA ***************/
 
 
 
@@ -34,7 +34,7 @@ int main( int argc, char *argv[]) {
     
     fclose(file);
 
-/********************************* ACA TERMINA LA LECTURA *****************************************/
+/*********** ACA TERMINA LA LECTURA ***************/
 
 
 
@@ -45,15 +45,8 @@ int main( int argc, char *argv[]) {
         printf("The string is not accepted.\n");
     }
 
-    FILE *file2;
-    file2 = fopen(outputFileName, "w");
-    if (file2 == NULL) {
-        printf("Error\n");
-        exit(1);
-    }
 
-    writeToFile(file2, ndfa);
-    fclose(file2);
+    writeToFile(ndfa);
 
     return 0;
 }
