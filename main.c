@@ -20,8 +20,6 @@ int main( int argc, char *argv[]) {
 
 /********************************* ACA EMPIEZA LA LECTURA *****************************************/
 
-
-
     // leer archivo
     FILE *file;
     file = fopen(inputFileName, "r");
