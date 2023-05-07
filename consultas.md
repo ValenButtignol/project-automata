@@ -1,1 +1,0 @@
-# Compactar el algoritmo de convertToNDFA (la parte del elemInSet)
