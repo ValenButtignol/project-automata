@@ -1,66 +1,65 @@
-#include "array.h"
+#include "set.h"
 
-/**
- * This struct represents a non deterministic finite automaton.
- * 
- * @param states The set of states (K). From 0 to states - 1.
- * @param symbols The set of symbols that represents the alphabet. From 0 to symbols - 1.
- * @param delta The transition matrix delta[state][symbol] = [states].
- * @param initialState The initial state of the automaton.
- * @param finalStates The set of final states of the automaton.
-*/
-typedef struct NonDeterministicFiniteAutomaton {
-    int states;
-    int symbols;       
-    int delta[MAX_ARRAY][MAX_ARRAY][MAX_ARRAY];   
-    int initialState; 
-    Array finalStates;
-} NDFA;
+typedef struct DFATransition {
+    int fromState;
+    int symbol;
+    int toState;
+} DFATransition;
 
-/**
- * This struct represents a deterministic finite automaton.
- * 
- * @param states The set of states (K). From 0 to states - 1.
- * @param symbols The set of symbols that represents the alphabet. From 0 to symbols - 1.
- * @param delta The transition matrix delta[state][symbol] = state.
- * @param initialState The initial state of the automaton.
- * @param finalStates The set of final states of the automaton.
- */
-typedef struct DeterministicFiniteAutomaton {
-    int states; 
-    int symbols;        
-    int delta[MAX_ARRAY][MAX_ARRAY];    
-    int initialState; 
-    Array finalStates; 
+typedef struct DFATransitionNode {
+    DFATransition transition;
+    struct DFATransitionNode* next;
+} DFATransitionNode;
+
+typedef struct DFA {
+    int numStates;
+    int numSymbols;
+    DFATransitionNode* transitions;
+    int startState;
+    Node* finalStates;
 } DFA;
 
-/**
- * This function creates a non deterministic finite automaton.
- * 
- * @param num_states The number of states.
- * @param num_symbols The number of symbols.
- * @param initialState The initial state of the automaton.
- * @param finalStates The set of final states of the automaton.
- * @return The non deterministic finite automaton.
- */
-NDFA createNDFAAutomaton(int num_states, int num_symbols, int initialState, Array finalStates);
+typedef struct NDFATransition {
+    int fromState;
+    int symbol;
+    Node* toStates;
+} NDFATransition;
 
-/**
- * This function adds a transition to a non deterministic finite automaton.
- * 
- * @param automaton The non deterministic finite automaton.
- * @param fromState The origin state of the transition.
- * @param toStates The set of states to transitionate.
- * @param symbol The symbol of the transition.
- */
-void addTransitionToNDFA(NDFA *automaton, int fromState, Array toStates, int symbol);
+typedef struct NDFATransitionNode {
+    NDFATransition transition;
+    struct NDFATransitionNode* next;
+} NDFATransitionNode;
 
+typedef struct NDFA {
+    int numStates;
+    int numSymbols;
+    NDFATransitionNode* transitions;
+    int startState;
+    Node* finalStates;
+} NDFA;
 
-/**
- * This functions checks if a given NDFA automaton contains a given array as a final state.
- * 
- * @param automaton The automaton to check.
- * @param states The array of states to check.
- * @return TRUE if the automaton contains the array as a final state, FALSE otherwise.
-*/
-int containsFinalState(NDFA automaton, Array states);
+DFA createDFA(int numStates, int numSymbols, int startState);
+
+void addFinalStateDFA(DFA* dfa, int state);
+
+void insertTransitionDFA(DFA* dfa, int fromState, int symbol, int toState);
+
+void insertDFATransitionNode(DFATransitionNode** head, DFATransition transition);
+
+int searchTransitionDFA(DFA dfa, int fromState, int symbol);
+
+void displayDFA(DFA dfa);
+
+void freeDFA(DFA dfa);
+
+NDFA createNDFA(int numStates, int numSymbols, int startState);
+
+void addFinalStateNDFA(NDFA* ndfa, int state);
+
+void insertTransitionNDFA(NDFA* ndfa, int fromState, int symbol, int toState);
+
+void insertNDFATransitionNode(NDFATransitionNode** head, NDFATransition transition);
+
+void displayNDFA(NDFA ndfa);
+
+void freeNDFA(NDFA ndfa);

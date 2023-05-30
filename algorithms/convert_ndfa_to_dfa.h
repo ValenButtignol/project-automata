@@ -1,28 +1,10 @@
-#include "../structures/markable.h"
+#include "../structures/finite_automaton.h"
 
-/**
- * This function calculates the lambda clausure of a set of states.
- * 
- * @param automaton The automaton to use.
- * @param states The set of states to calculate the lambda clausure.
- * @return The lambda clausure of the set of states.
-*/
-Array lambdaClausure(NDFA automaton, Array states);
+// define lambda closure function. It takes a set of states and returns a set of states
+Node* lambdaClosure(NDFA ndfa, Node* set);
 
-/**
- * This function calculates the move of a set of states with a symbol.
- * 
- * @param automaton The automaton to use.
- * @param states The set of states to calculate the move.
- * @param symbol The symbol to use.
- * @return The move of the set of states with the symbol.
-*/
-Array move(NDFA automaton, Array states, int symbol);
+// define move function. It takes a set of states and a symbol and returns a set of states
+Node* move(NDFA ndfa, Node* set, int symbol);
 
-/**
- * This function converts a NDFA to a DFA.
- * 
- * @param automaton The automaton to convert.
- * @return The converted automaton.
-*/
-DFA convertToDFA(NDFA automaton);
+// convert NDFA to DFA
+DFA convertNDFAtoDFA(NDFA ndfa);

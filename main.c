@@ -52,6 +52,7 @@ int main( int argc, char *argv[]) {
 
     writeToFile(file2, ndfa);
     fclose(file2);
+    freeNDFA(ndfa);
 
     return 0;
 }
