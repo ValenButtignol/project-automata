@@ -1,13 +1,12 @@
-#include "union_ndfa.h"
+#include "concatenation_ndfa.h"
 
-NDFA unionNDFA(NDFA ndfa1, NDFA ndfa2) {
+// TODO: habria que agregarle un simbolo mas representando el lambda? que pasa si ya habia una transicion lambda en algun ndfa?
+NDFA concatenateNDFA(NDFA ndfa1, NDFA ndfa2) {
+
     int maxSymbols = (ndfa1.numSymbols > ndfa2.numSymbols) ? ndfa1.numSymbols : ndfa2.numSymbols;
-    int startStateUnion = ndfa1.numStates + ndfa2.numStates + 1; // the start state of the new NDFA
-    NDFA result = createNDFA(ndfa1.numStates + ndfa2.numStates + 2, maxSymbols, startStateUnion); 
 
-    // Setting the final state of the union
-    addFinalStateNDFA(&result, startStateUnion + 1);
-
+    NDFA result = createNDFA(ndfa1.numStates + ndfa2.numStates, maxSymbols, ndfa1.startState); 
+    
     int numStates1 = ndfa1.numStates;
 
     // Renaming the states of the transitions of ndfa2 to avoid overlapping states
@@ -30,6 +29,15 @@ NDFA unionNDFA(NDFA ndfa1, NDFA ndfa2) {
         currentFinalStates = currentFinalStates->next;
     }
 
+    
+    // Set the finalStates of the new NDFA with the finalStates of ndfa2
+    Node* finalStates = ndfa2.finalStates;
+    while (finalStates != NULL) {
+        addFinalStateNDFA(&result, finalStates->data);
+        finalStates = finalStates->next;
+    }
+
+
     // Set the transitions of the new NDFA
     // First we add the transitions of the ndfa1
     NDFATransitionNode* currentTransition = ndfa1.transitions;
@@ -51,22 +59,13 @@ NDFA unionNDFA(NDFA ndfa1, NDFA ndfa2) {
             toStates = toStates->next;
         }
         currentTransition = currentTransition->next;
-    }    
-
-    // Adding new lambda transitions. We assume ndfa1 and ndfa2 can have more than 1 final state
-    // Lambda transition from startStateUnion to the start state of ndfa1
-    insertTransitionNDFA(&result, result.startState, LAMBDA, ndfa1.startState);
-    insertTransitionNDFA(&result, result.startState, LAMBDA, ndfa2.startState);
-
-    // Lambda transition from the final states of 
-    Node* finalStates1 = ndfa1.finalStates;
-    while (finalStates1 != NULL) {
-        insertTransitionNDFA(&result, finalStates1->data, LAMBDA, result.finalStates->data);
     }
 
-    Node* finalStates2 = ndfa2.finalStates;
-    while (finalStates2 != NULL) {
-        insertTransitionNDFA(&result, finalStates2->data, LAMBDA, result.finalStates->data);
+    // Add new lambda transition from the final states of ndfa1 to the startState of the ndfa2
+    // We assume ndfa1 can have more than 1 final state
+    Node* finalStates = ndfa1.finalStates;
+    while (finalStates != NULL) {
+        insertTransitionNDFA(&result, finalStates->data, LAMBDA, ndfa2.startState);
     }
 
     return result;
