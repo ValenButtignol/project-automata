@@ -3,8 +3,8 @@
 NDFA createFromFile(FILE *file, int numStates, int numSymbols) {
 
     NDFA ndfa;
-    ndfa.numStates = 4;
-    ndfa.numSymbols = 2;
+    ndfa.numStates = numStates;
+    ndfa.numSymbols = numSymbols;
     ndfa.finalStates = NULL;
     ndfa.transitions = NULL;   
     char line[100];

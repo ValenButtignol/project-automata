@@ -51,7 +51,7 @@ NDFA concatenateNDFA(NDFA ndfa1, NDFA ndfa2) {
     }
 
     // Now we add the transitions of the ndfa2
-    NDFATransitionNode* currentTransition = ndfa2.transitions;
+    currentTransition = ndfa2.transitions;
     while (currentTransition != NULL) {
         Node* toStates = currentTransition->transition.toStates;
         while (toStates != NULL) {
@@ -63,10 +63,11 @@ NDFA concatenateNDFA(NDFA ndfa1, NDFA ndfa2) {
 
     // Add new lambda transition from the final states of ndfa1 to the startState of the ndfa2
     // We assume ndfa1 can have more than 1 final state
-    Node* finalStates = ndfa1.finalStates;
+    finalStates = ndfa1.finalStates;
     while (finalStates != NULL) {
-        insertTransitionNDFA(&result, finalStates->data, LAMBDA, ndfa2.startState);
+        insertTransitionNDFA(&result, finalStates->data, LAMBDA, ndfa2.startState + numStates1);
+        finalStates = finalStates->next;
     }
-
+    displayNDFA(result);
     return result;
 }

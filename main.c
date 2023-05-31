@@ -1,4 +1,4 @@
-#include "algorithms/read_and_write.h"
+#include "algorithms/klenne_clausure_ndfa.h"
 
 int main( int argc, char *argv[]) {
 
@@ -17,6 +17,8 @@ int main( int argc, char *argv[]) {
 
     // createFromFile(inputFileName; cantEstados; numSymbols)    
     NDFA ndfa;
+    NDFA ndfa2;
+    NDFA result;
 
 /********************************* ACA EMPIEZA LA LECTURA *****************************************/
 
@@ -29,19 +31,20 @@ int main( int argc, char *argv[]) {
     }
 
     ndfa = createFromFile(file, numStates, numSymbols);
-    
     fclose(file);
+
+    result = clausuraKlenne(ndfa);
 
 /********************************* ACA TERMINA LA LECTURA *****************************************/
 
 
 
-    int result = belongsToLanguage(ndfa, string);
+    /* int result = belongsToLanguage(ndfa, string);
     if (result == TRUE) {
         printf("The string is accepted.\n");
     } else {
         printf("The string is not accepted.\n");
-    }
+    } */
 
     FILE *file2;
     file2 = fopen(outputFileName, "w");
@@ -50,9 +53,10 @@ int main( int argc, char *argv[]) {
         exit(1);
     }
 
-    writeToFile(file2, ndfa);
+    writeToFile(file2, result);
     fclose(file2);
     freeNDFA(ndfa);
+    freeNDFA(result);
 
     return 0;
 }

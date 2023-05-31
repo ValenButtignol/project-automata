@@ -1,4 +1,4 @@
-#include "../structures/finite_automaton.h"
+#include "read_and_write.h"
 
 
 NDFA concatenateNDFA(NDFA ndfa1, NDFA ndfa2);

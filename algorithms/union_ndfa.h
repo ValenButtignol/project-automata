@@ -1,3 +1,3 @@
-#include "../structures/finite_automaton.h"
+#include "read_and_write.h"
 
 NDFA unionNDFA(NDFA ndfa1, NDFA ndfa2);

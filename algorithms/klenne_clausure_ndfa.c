@@ -7,10 +7,10 @@
     El nuevo inicial sera ndfa.numSTates + 1, y el nuevo final sera ndfa.numSTates + 2
 */ 
 NDFA clausuraKlenne(NDFA ndfa){
-    NDFA result = createNDFA(ndfa.numStates + 2, ndfa.numSymbols, ndfa.numStates + 1);
+    NDFA result = createNDFA(ndfa.numStates + 2, ndfa.numSymbols, ndfa.numStates);
 
     // Set the final state of the new NDFA result
-    addFinalStateNDFA(&result, ndfa.numStates + 2);
+    addFinalStateNDFA(&result, ndfa.numStates + 1);
 
     // Set the transitions of the new NDFA result
     // First we add the transitions of the ndfa
@@ -27,8 +27,13 @@ NDFA clausuraKlenne(NDFA ndfa){
     // Now we add the four new lambda transitions 
     insertTransitionNDFA(&result, result.startState, LAMBDA, ndfa.startState);
     insertTransitionNDFA(&result, result.startState, LAMBDA, result.finalStates->data);
-    insertTransitionNDFA(&result, ndfa.finalStates->data, LAMBDA, ndfa.startState);   // we asume ndfa has only one final state
-    insertTransitionNDFA(&result, ndfa.finalStates->data, LAMBDA, result.finalStates->data);
+
+    Node* finalStates = ndfa.finalStates;
+    while (finalStates != NULL) {
+        insertTransitionNDFA(&result, finalStates->data, LAMBDA, ndfa.startState);   // we asume ndfa has only one final state
+        insertTransitionNDFA(&result, finalStates->data, LAMBDA, result.finalStates->data);
+        finalStates = finalStates->next;
+    }
 
     return result;
 }
