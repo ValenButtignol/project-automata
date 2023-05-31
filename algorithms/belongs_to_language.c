@@ -16,13 +16,3 @@ int belongsToLanguage(NDFA automaton, char *string){
     return result;
 }
 
-int searchTransitionDFA(DFA dfa, int fromState, int symbol){
-    DFATransitionNode* current = dfa.transitions;
-    while (current != NULL){
-        if (current->transition.fromState == fromState && current->transition.symbol == symbol){
-            return current->transition.toState;
-        }
-        current = current->next;
-    }
-    return -1;
-}

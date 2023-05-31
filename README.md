@@ -36,3 +36,23 @@ According to the class assignment, the different activities can be found in the 
 3) [Parse Input and Output Implementation](https://github.com/ValenButtignol/project-automatons/blob/main/algorithms/read_and_write.c)
 4) [Convert NDFA to DFA Implementation](https://github.com/ValenButtignol/project-automatons/blob/main/algorithms/convert_ndfa_to_dfa.c)
 
+
+
+
+
+
+
+
+
+Array stringToArray(char string[]){
+    Array result;
+    int length = strlen(string);
+    for (int i = 0; i < length; i++){
+        char stringNumber[2];
+        stringNumber[0] = string[i];
+        stringNumber[1] = '\0';
+        result.a[i] = atoi(stringNumber);
+        result.length++;
+    }
+    return result;
+}
