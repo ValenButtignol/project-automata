@@ -2,13 +2,14 @@
 #include "../../include/algorithms/kleene_closure_ndfa.h"
 #include "../../include/constants.h"
 
-// TODO: habria que agregar un simbolo a la cantidad total de simbolos del nuevo NDFA
-// que representa el lambda de las nuevas transiciones?
-/*
-    Para hacer la clausura agregamos dos estados nuevos, el nuevo inicial y el nuevo final
-    El nuevo inicial sera ndfa.numSTates + 1, y el nuevo final sera ndfa.numSTates + 2
-*/ 
-NDFA clausuraKlenne(NDFA ndfa){
+
+/**
+ * This function computes the kleene closure.
+ * 
+ * @param automaton The non deterministic automata.
+ * @return The kleene closure of the ndfa.
+*/
+NDFA kleeneClosure(NDFA ndfa){
     NDFA result = createNDFA(ndfa.numStates + 2, ndfa.numSymbols, ndfa.numStates);
 
     // Set the final state of the new NDFA result

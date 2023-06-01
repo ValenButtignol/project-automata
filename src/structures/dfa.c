@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include "../../include/structures/dfa.h"
 
 /**
@@ -25,7 +26,7 @@ DFA createDFA(int numStates, int numSymbols, int initialState) {
  * @param dfa The deterministic finite automata.
  * @param state The final state to be added.
  */
-void addFinalStateDFA(DFA* dfa, int state) {
+void addDFAFinalState(DFA* dfa, int state) {
     addData(&(dfa->finalStates), state);
 }
 

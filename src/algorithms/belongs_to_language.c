@@ -3,18 +3,29 @@
 #include "../../include/structures/dfa.h"
 #include "../../include/constants.h"
 #include <string.h>
+#include <stdlib.h>
 
-void stringToArray(char string[], int length, int *result[]){
-    int result[length];
+
+/**
+ * This function transforms a given string into an integer array.
+ * 
+ * @param string The string to transform.
+ * @param length The length of the string.
+ * @param stringArray The array to keep the numbers.
+*/
+void stringToArray(char string[], int length, int stringArray[]){
     for (int i = 0; i < length; i++){
-        char stringNumber[2];
-        stringNumber[0] = string[i];
-        stringNumber[1] = '\0';
-        result[i] = atoi(stringNumber);
+        stringArray[i] = string[i] - '0';
     }
-    return result;
 }
 
+/**
+ * This function checks if a given string is accepted by a given automata.
+ * 
+ * @param automaton The non deterministic automata.
+ * @param string The string to accept.
+ * @return TRUE (1) if the string is accepted, FALSE (0) otherwise.
+*/
 int belongsToLanguage(NDFA automaton, char *string){
     int length = strlen(string);
     int stringArray[length];
@@ -23,7 +34,7 @@ int belongsToLanguage(NDFA automaton, char *string){
 
     int currentState = dfa.initialState;
     for (int i = 0; i < length; i++){
-        currentState = searchDFATransition(dfa, currentState, stringArray);
+        currentState = searchDFATransition(dfa, currentState, stringArray[i]);
         if (currentState == -1){
             return FALSE;
         }

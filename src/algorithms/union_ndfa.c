@@ -2,6 +2,13 @@
 #include "../../include/constants.h"
 #include <stdlib.h>
 
+/**
+ * This function computes the union of two given automatons.
+ * 
+ * @param ndfa1 The first non deterministic automata.
+ * @param ndfa2 The second non deterministic automata.
+ * @return The union of the given automatons.
+*/
 NDFA unionNDFA(NDFA ndfa1, NDFA ndfa2) {
     int maxSymbols = (ndfa1.numSymbols > ndfa2.numSymbols) ? ndfa1.numSymbols : ndfa2.numSymbols;
     int initialStateUnion = ndfa1.numStates + ndfa2.numStates; // the initial state of the new NDFA
@@ -54,8 +61,6 @@ NDFA unionNDFA(NDFA ndfa1, NDFA ndfa2) {
         addNDFATransition(&result, finalStates2->data, LAMBDA, result.finalStates->data);
         finalStates2 = finalStates2->next;
     }
-
-    toStringNDFA(result);
 
     return result;
 }

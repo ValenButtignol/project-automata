@@ -2,7 +2,5 @@ digraph{
 inic[shape=point];
 inic->0;
 0->1 [label="0"];
-0->2 [label="1"];
 1[shape=doublecircle];
-2[shape=doublecircle];
 }

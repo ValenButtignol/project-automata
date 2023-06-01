@@ -4,24 +4,6 @@
 #include "node.h"
 
 /**
- * This struct represents a non deterministic finite automata.
- * 
- * @param numStates The amount of states of the automata.
- * @param symbols The amount of symbols of the automata.
- * @param delta The transitions of the automata.
- * @param initialState The initial state of the automata.
- * @param finalStates The set of final states of the automata.
-*/
-typedef struct NDFA {
-    int numStates;
-    int numSymbols;
-    NDFATransitionNode* delta;
-    int initialState;
-    Node* finalStates;
-} NDFA;
-
-
-/**
  * This struct represents the transition type of a non deterministic finite automata
  * 
  * @param fromState The "from" state of the transition.
@@ -46,6 +28,22 @@ typedef struct NDFATransitionNode {
     struct NDFATransitionNode* next;
 } NDFATransitionNode;
 
+/**
+ * This struct represents a non deterministic finite automata.
+ * 
+ * @param numStates The amount of states of the automata.
+ * @param symbols The amount of symbols of the automata.
+ * @param delta The transitions of the automata.
+ * @param initialState The initial state of the automata.
+ * @param finalStates The set of final states of the automata.
+*/
+typedef struct NDFA {
+    int numStates;
+    int numSymbols;
+    NDFATransitionNode* delta;
+    int initialState;
+    Node* finalStates;
+} NDFA;
 
 /**
  * This function creates a non deterministic finite automata without final states and without transitions.

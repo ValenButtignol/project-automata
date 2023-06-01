@@ -1,9 +1,15 @@
 #include "../../include/algorithms/convert_ndfa_to_dfa.h"
 #include "../../include/structures/set_of_markable_sets.h"
 #include "../../include/constants.h"
+#include "../../include/structures/dfa.h"
 #include <stdlib.h>
 
-
+/**
+ * This function convert NDFA to DFA
+ * 
+ * @param ndfa Non deterministic finite automata
+ * @return DFA Deterministic finite automata
+*/
 DFA convertNDFAtoDFA(NDFA ndfa) {
     DFA dfa;
     dfa.delta = NULL;
@@ -55,6 +61,13 @@ DFA convertNDFAtoDFA(NDFA ndfa) {
     return dfa;
 }
 
+/**
+ * This function define lambda closure
+ * 
+ * @param ndfa Non deterministic finite automata
+ * @param set Set of states
+ * @return Node* Set of states
+*/
 Node* lambdaClosure(NDFA ndfa, Node* set) {
     Node* closure = NULL;
     Node* current = set;
@@ -82,6 +95,14 @@ Node* lambdaClosure(NDFA ndfa, Node* set) {
     return closure;
 }
 
+/**
+ * This function define move 
+ * 
+ * @param ndfa Non deterministic finite automata
+ * @param set Set of states 
+ * @param symbol Symbol to move
+ * @return Node* Set of states
+*/
 Node* move(NDFA ndfa, Node* set, int symbol) {
     Node* move = NULL;
     Node* current = set;

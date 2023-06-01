@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include "../../include/structures/set_of_markable_sets.h"
+#include "../../include/structures/node.h"
 
 /**
  * This function adds a new markable set.
@@ -37,7 +38,7 @@ void addSet(SetOfMarkableSets** head, Node* set){
 int containsSet(SetOfMarkableSets* setOfMarkableSets, Node* set) {
     SetOfMarkableSets* current = setOfMarkableSets;
     while (current != NULL) {
-        if (areEqual(current->set, set)) {
+        if (areEqualNodes(current->set, set)) {
             return 1;
         }
         current = current->next;
@@ -56,7 +57,7 @@ int containsSet(SetOfMarkableSets* setOfMarkableSets, Node* set) {
 int isMarked(SetOfMarkableSets* setOfMarkableSets, Node* set) {
     SetOfMarkableSets* current = setOfMarkableSets;
     while (current != NULL) {
-        if (areEqual(current->set, set)) {
+        if (areEqualNodes(current->set, set)) {
             return current->marked;
         }
         current = current->next;
@@ -74,7 +75,7 @@ int isMarked(SetOfMarkableSets* setOfMarkableSets, Node* set) {
 void markSet(SetOfMarkableSets* setOfMarkableSets, Node* set) {
     SetOfMarkableSets* current = setOfMarkableSets;
     while (current != NULL) {
-        if (areEqual(current->set, set)) {
+        if (areEqualNodes(current->set, set)) {
             current->marked = 1;
             return;
         }
@@ -112,7 +113,7 @@ int getSetIndex(SetOfMarkableSets* setOfMarkableSets, Node* set) {
     SetOfMarkableSets* current = setOfMarkableSets;
     int index = 0;
     while (current != NULL) {
-        if (areEqual(current->set, set)) {
+        if (areEqualNodes(current->set, set)) {
             return index;
         }
         index++;
@@ -132,7 +133,7 @@ void freeSetOfMarkableSets(SetOfMarkableSets* setOfMarkableSets) {
     while (current != NULL) {
         SetOfMarkableSets* temp = current;
         current = current->next;
-        freeSet(temp->set);
+        freeNode(temp->set);
         free(temp);
     }
 }

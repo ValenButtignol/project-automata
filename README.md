@@ -8,7 +8,7 @@ This project was made by [Delfina Buil](https://github.com/delfib), [Valentín B
 
 For compiling this project, use the following command:
 ```
-gcc main.c structures/set.c structures/finite_automaton.c algorithms/convert_ndfa_to_dfa.c algorithms/belongs_to_language.c algorithms/read_and_write.c algorithms/union_ndfa.c -o main 
+gcc main.c src/algorithms/belongs_to_language.c src/algorithms/concatenate_ndfa.c src/algorithms/convert_ndfa_to_dfa.c src/algorithms/kleene_closure_ndfa.c src/algorithms/read_and_write.c src/algorithms/union_ndfa.c src/structures/dfa.c src/structures/ndfa.c src/structures/node.c src/structures/set_of_markable_sets.c -o main 
 ```
 
 For executing this project, you must use the next commands:

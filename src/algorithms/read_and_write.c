@@ -1,7 +1,17 @@
 #include "../../include/algorithms/read_and_write.h"
 #include "../../include/constants.h"
+#include <string.h>
+#include <stdlib.h>
 
-
+/**
+* This function reads an NDFA from a file.dot and creates a new NDFA with that 
+* information.
+*
+* @param file to read the NDFA from
+* @param numStates number of states the NDFA has
+* @param numSymbols number of symbols the NDFA has
+* @return ndfa created from the file
+*/
 NDFA createFromFile(FILE *file, int numStates, int numSymbols) {
 
     NDFA ndfa;
@@ -74,7 +84,12 @@ NDFA createFromFile(FILE *file, int numStates, int numSymbols) {
 }
 
 
-
+/**
+* This function writes a given NDFA on a file.dot
+*
+* @param file to write the NDFA on
+* @param ndfa to write on the file
+*/
 void writeToFile(FILE *file, NDFA ndfa) {
     // Write the header of the file.
     fprintf(file, "digraph{\n");
@@ -100,7 +115,7 @@ void writeToFile(FILE *file, NDFA ndfa) {
         aux2 = aux2->next;
     }
 
-    //traverse final states and write them "%d[shape=doublecircle];"
+    // traverse final states and write them "%d[shape=doublecircle];"
     Node* aux = ndfa.finalStates;
     while (aux != NULL) {
         fprintf(file, "%d[shape=doublecircle];\n", aux->data);
