@@ -1,4 +1,6 @@
-#include "klenne_clausure_ndfa.h"
+#include <stdlib.h>
+#include "../../include/algorithms/kleene_closure_ndfa.h"
+#include "../../include/constants.h"
 
 // TODO: habria que agregar un simbolo a la cantidad total de simbolos del nuevo NDFA
 // que representa el lambda de las nuevas transiciones?
@@ -10,28 +12,28 @@ NDFA clausuraKlenne(NDFA ndfa){
     NDFA result = createNDFA(ndfa.numStates + 2, ndfa.numSymbols, ndfa.numStates);
 
     // Set the final state of the new NDFA result
-    addFinalStateNDFA(&result, ndfa.numStates + 1);
+    addNDFAFinalState(&result, ndfa.numStates + 1);
 
     // Set the transitions of the new NDFA result
     // First we add the transitions of the ndfa
-    NDFATransitionNode* currentTransition = ndfa.transitions;
+    NDFATransitionNode* currentTransition = ndfa.delta;
     while (currentTransition != NULL) {
         Node* toStates = currentTransition->transition.toStates;
         while (toStates != NULL) {
-            insertTransitionNDFA(&result, currentTransition->transition.fromState, currentTransition->transition.symbol, toStates->data);
+            addNDFATransition(&result, currentTransition->transition.fromState, currentTransition->transition.symbol, toStates->data);
             toStates = toStates->next;
         }
         currentTransition = currentTransition->next;
     }
 
     // Now we add the four new lambda transitions 
-    insertTransitionNDFA(&result, result.startState, LAMBDA, ndfa.startState);
-    insertTransitionNDFA(&result, result.startState, LAMBDA, result.finalStates->data);
+    addNDFATransition(&result, result.initialState, LAMBDA, ndfa.initialState);
+    addNDFATransition(&result, result.initialState, LAMBDA, result.finalStates->data);
 
     Node* finalStates = ndfa.finalStates;
     while (finalStates != NULL) {
-        insertTransitionNDFA(&result, finalStates->data, LAMBDA, ndfa.startState);   // we asume ndfa has only one final state
-        insertTransitionNDFA(&result, finalStates->data, LAMBDA, result.finalStates->data);
+        addNDFATransition(&result, finalStates->data, LAMBDA, ndfa.initialState);   // we asume ndfa has only one final state
+        addNDFATransition(&result, finalStates->data, LAMBDA, result.finalStates->data);
         finalStates = finalStates->next;
     }
 

@@ -1,23 +1,27 @@
-#include "convert_ndfa_to_dfa.h"
+#include "../../include/algorithms/convert_ndfa_to_dfa.h"
+#include "../../include/structures/set_of_markable_sets.h"
+#include "../../include/constants.h"
+#include <stdlib.h>
+
 
 DFA convertNDFAtoDFA(NDFA ndfa) {
     DFA dfa;
-    dfa.transitions = NULL;
+    dfa.delta = NULL;
     dfa.finalStates = NULL;
     dfa.numSymbols = ndfa.numSymbols;
-    dfa.startState = 0;
+    dfa.initialState = 0;
     SetOfMarkableSets* setOfMarkableSets = NULL;
-    Node* startState = lambdaClosure(ndfa, createNode(ndfa.startState));
+    Node* startState = lambdaClosure(ndfa, createNode(ndfa.initialState));
     //check if startState is a final state
     Node* current = startState;
     while (current != NULL) {
-        if (containsElement(ndfa.finalStates, current->data) == 1) {
-            addFinalStateDFA(&dfa, 0);
+        if (containsData(ndfa.finalStates, current->data) == 1) {
+            addDFAFinalState(&dfa, 0);
             break;
         }
         current = current->next;
     }
-    insertSetOfMarkableSets(&setOfMarkableSets, startState);
+    addSet(&setOfMarkableSets, startState);
     int numStates = 1;
     Node* finalStates = NULL;
     DFATransitionNode* transitions = NULL;
@@ -31,19 +35,19 @@ DFA convertNDFAtoDFA(NDFA ndfa) {
                 continue;
             }
             if(containsSet(setOfMarkableSets, newSet) == 0){
-                insertSetOfMarkableSets(&setOfMarkableSets, newSet);
+                addSet(&setOfMarkableSets, newSet);
                 numStates++;
             }
             // check if newSet is a final state
             Node* current = newSet;
             while (current != NULL) {
-                if (containsElement(ndfa.finalStates, current->data) == 1) {
-                    addFinalStateDFA(&dfa, getSetIndex(setOfMarkableSets, newSet));
+                if (containsData(ndfa.finalStates, current->data) == 1) {
+                    addDFAFinalState(&dfa, getSetIndex(setOfMarkableSets, newSet));
                     break;
                 }
                 current = current->next;
             }
-            insertTransitionDFA(&dfa, getSetIndex(setOfMarkableSets, currentSet), i, getSetIndex(setOfMarkableSets, newSet));
+            addDFATransition(&dfa, getSetIndex(setOfMarkableSets, currentSet), i, getSetIndex(setOfMarkableSets, newSet));
         }
     }
     freeSetOfMarkableSets(setOfMarkableSets);
@@ -55,18 +59,18 @@ Node* lambdaClosure(NDFA ndfa, Node* set) {
     Node* closure = NULL;
     Node* current = set;
     while (current != NULL) {
-        insertElement(&closure, current->data);
+        addData(&closure, current->data);
         current = current->next;
     }
 
     current = closure;
     while (current != NULL) {
-        NDFATransitionNode* currentTransition = ndfa.transitions;
+        NDFATransitionNode* currentTransition = ndfa.delta;
         while (currentTransition != NULL) {
             if (currentTransition->transition.fromState == current->data && currentTransition->transition.symbol == LAMBDA) {
                 Node* currentToState = currentTransition->transition.toStates;
                 while (currentToState != NULL) {
-                    insertElement(&closure, currentToState->data);
+                    addData(&closure, currentToState->data);
                     currentToState = currentToState->next;
                 }
             }
@@ -74,7 +78,6 @@ Node* lambdaClosure(NDFA ndfa, Node* set) {
         }
         current = current->next;
     }
-    
 
     return closure;
 }
@@ -83,12 +86,12 @@ Node* move(NDFA ndfa, Node* set, int symbol) {
     Node* move = NULL;
     Node* current = set;
     while (current != NULL) {
-        NDFATransitionNode* currentTransition = ndfa.transitions;
+        NDFATransitionNode* currentTransition = ndfa.delta;
         while (currentTransition != NULL) {
             if (currentTransition->transition.fromState == current->data && currentTransition->transition.symbol == symbol) {
                 Node* currentToState = currentTransition->transition.toStates;
                 while (currentToState != NULL) {
-                    insertElement(&move, currentToState->data);
+                    addData(&move, currentToState->data);
                     currentToState = currentToState->next;
                 }
             }

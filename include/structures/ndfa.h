@@ -88,6 +88,15 @@ void addNDFATransitionNode(NDFATransitionNode** head, NDFATransition transition)
 
 
 /**
+ * This function sums the given number to all the states of the non deterministic finite automata.
+ * 
+ * @param ndfa The non deterministic finite automata.
+ * @param number The number to be summed up.
+*/
+void renameNDFAStates(NDFA* ndfa, int number);
+
+
+/**
  * This function prints all the data of the automata.
  * 
  * @param ndfa The non deterministic finite automata.
@@ -100,5 +109,4 @@ void toStringNDFA(NDFA ndfa);
  * @param ndfa The non deterministic finite automata.
 */
 void freeNDFA(NDFA ndfa);
-
 #endif

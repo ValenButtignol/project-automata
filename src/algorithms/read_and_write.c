@@ -1,4 +1,6 @@
-#include "read_and_write.h"
+#include "../../include/algorithms/read_and_write.h"
+#include "../../include/constants.h"
+
 
 NDFA createFromFile(FILE *file, int numStates, int numSymbols) {
 
@@ -6,7 +8,7 @@ NDFA createFromFile(FILE *file, int numStates, int numSymbols) {
     ndfa.numStates = numStates;
     ndfa.numSymbols = numSymbols;
     ndfa.finalStates = NULL;
-    ndfa.transitions = NULL;   
+    ndfa.delta = NULL;   
     char line[100];
     while (fgets(line, 100, file) != NULL) {
 
@@ -18,7 +20,7 @@ NDFA createFromFile(FILE *file, int numStates, int numSymbols) {
             token2 = strtok(line, "->");
             token2 = strtok(NULL, ";") + 1;
             initialState = atoi(token2);  
-            ndfa.startState = initialState;
+            ndfa.initialState = initialState;
         }
 
         // We capture the lines with the pattern "[shape=doublecircle];", while we are reading the file.
@@ -28,7 +30,7 @@ NDFA createFromFile(FILE *file, int numStates, int numSymbols) {
             char *token3;
             token3 = strtok(line, "[");
             finalState = atoi(token3);
-            addFinalStateNDFA(&ndfa, finalState);
+            addNDFAFinalState(&ndfa, finalState);
         }
 
         // We capture the lines with the pattern "label", while we are reading the file.
@@ -63,7 +65,7 @@ NDFA createFromFile(FILE *file, int numStates, int numSymbols) {
                 token = strtok(NULL, ",");
             }
             for(int i = 0; i < count; i++) {
-                insertTransitionNDFA(&ndfa, fromState, label[i], toState);
+                addNDFATransition(&ndfa, fromState, label[i], toState);
             }
         }
     }
@@ -77,9 +79,9 @@ void writeToFile(FILE *file, NDFA ndfa) {
     // Write the header of the file.
     fprintf(file, "digraph{\n");
     fprintf(file, "inic[shape=point];\n");
-    fprintf(file, "inic->%d;\n", ndfa.startState);
+    fprintf(file, "inic->%d;\n", ndfa.initialState);
     // traverse transitions and write them "%d->%d[label=\"%d\"];\n"
-    NDFATransitionNode* aux2 = ndfa.transitions;
+    NDFATransitionNode* aux2 = ndfa.delta;
     while (aux2 != NULL) {
         int fromState = aux2->transition.fromState;
         int symbol = aux2->transition.symbol;

@@ -87,6 +87,39 @@ void addNDFATransitionNode(NDFATransitionNode** head, NDFATransition transition)
 }
 
 /**
+ * This function sums the given number to all the states of the non deterministic finite automata.
+ * 
+ * @param ndfa The non deterministic finite automata.
+ * @param number The number to be summed up.
+*/
+void renameNDFAStates(NDFA* ndfa, int number){
+    // Renaming the initial state of the ndfa
+    ndfa->initialState += number;
+
+    // Renaming the states of the transitions of ndfa to avoid overlapping states
+    NDFATransitionNode* current = ndfa->delta;
+    while (current != NULL){
+        current->transition.fromState += number;
+        
+        Node* currentToStates = current->transition.toStates;
+        while (currentToStates != NULL) {
+            currentToStates->data += number;
+            currentToStates = currentToStates->next;
+        }
+        current = current->next;
+    }
+
+    // Renaming the finalStates of the ndfa
+    Node* currentFinalStates = ndfa->finalStates;
+    while (currentFinalStates != NULL) {
+        currentFinalStates->data += number;
+        currentFinalStates = currentFinalStates->next;
+    }
+}
+
+
+
+/**
  * This function prints all the data of the automata.
  * 
  * @param ndfa The non deterministic finite automata.
