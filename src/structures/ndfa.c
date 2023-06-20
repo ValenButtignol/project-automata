@@ -175,3 +175,18 @@ void freeNDFA(NDFA ndfa) {
         free(temp);
     }
 }
+
+NDFA* createNDFAFromSymbol(int symbol){
+    NDFA* ndfa = (NDFA*)malloc(sizeof(NDFA));
+    if (ndfa == NULL) {
+        exit(1);
+    }
+    ndfa->numStates = 2;
+    ndfa->numSymbols = 1;
+    ndfa->initialState = 0;
+    ndfa->delta = NULL;
+    ndfa->finalStates = NULL;
+    addData(&(ndfa->finalStates), 1);
+    addNDFATransition(ndfa, 0, symbol, 1);
+    return ndfa;
+}

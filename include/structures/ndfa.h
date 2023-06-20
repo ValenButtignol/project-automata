@@ -107,4 +107,6 @@ void toStringNDFA(NDFA ndfa);
  * @param ndfa The non deterministic finite automata.
 */
 void freeNDFA(NDFA ndfa);
+
+NDFA* createNDFAFromSymbol(int symbol);
 #endif

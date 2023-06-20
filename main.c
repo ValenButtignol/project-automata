@@ -85,20 +85,23 @@ int main( int argc, char *argv[]) {
 /********************************* PARSING *****************************************/
 
     char* cursor;
-    char* string = "0|1";
+    NDFA* ndfa;
+    char* string = "(0.1|2)*";
     cursor = string;
 
     printf("String to parse: %s\n", string);
 
-    if (E(&cursor) && *cursor == '\0') { 
+    if (E(&cursor, &ndfa) && *cursor == '\0') { 
         puts("--------------------------------");
         puts("String is successfully parsed");
-        return 0;
     }
     else {
         puts("--------------------------------");
         puts("Error in parsing String");
-        return 1;
     }
+
+    printf("NDFA: \n");
+    toStringNDFA(*ndfa);
+    freeNDFA(*ndfa);
     return 0;
 }
