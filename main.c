@@ -4,6 +4,7 @@
 #include "include/algorithms/kleene_closure_ndfa.h"
 #include "include/algorithms/union_ndfa.h"
 #include "include/algorithms/read_and_write.h"
+#include "include/algorithms/parser.h"
 #include "include/structures/ndfa.h"
 #include "include/structures/dfa.h"
 #include "include/structures/node.h"
@@ -17,7 +18,7 @@
 
 int main( int argc, char *argv[]) {
 
-    printf("Amount of states for the automaton: %s\n", argv[1]);
+    /* printf("Amount of states for the automaton: %s\n", argv[1]);
     printf("Amount of alphabet symbols: %s\n", argv[2]);
     printf("Name of the input file: %s\n", argv[3]);
     printf("String to evaluate: %s\n", argv[4]);
@@ -32,31 +33,29 @@ int main( int argc, char *argv[]) {
 
     NDFA ndfa;
     NDFA ndfa2;
-    NDFA automataResult;
+    NDFA automataResult; */
 
 /********************************* ACA EMPIEZA LA LECTURA *****************************************/
 
     // leer archivo
-    FILE *file;
+    /* FILE *file;
     file = fopen(inputFileName, "r");
     if (file == NULL) {
         printf("Error\n");
         exit(1);
     }
-
     ndfa = createFromFile(file, numStates, numSymbols);
     fclose(file);
 
-    file = fopen(inputFileName, "r");
+    file = fopen("automaton2.dot", "r");
     if (file == NULL) {
         printf("Error\n");
         exit(1);
     }
-
     ndfa2 = createFromFile(file, numStates, numSymbols);
     fclose(file);
 
-    automataResult = kleeneClosure(ndfa);
+    automataResult = unionNDFA(ndfa, ndfa2); */
 
 /********************************* ACA TERMINA LA LECTURA *****************************************/
 
@@ -69,7 +68,7 @@ int main( int argc, char *argv[]) {
         printf("The string is not accepted.\n");
     } */
 
-    FILE *file2;
+    /* FILE *file2;
     file2 = fopen(outputFileName, "w");
     if (file2 == NULL) {
         printf("Error\n");
@@ -80,7 +79,26 @@ int main( int argc, char *argv[]) {
     fclose(file2);
     freeNDFA(ndfa);
     freeNDFA(ndfa2);
-    freeNDFA(automataResult);
+    freeNDFA(automataResult); */
 
+
+/********************************* PARSING *****************************************/
+
+    char* cursor;
+    char* string = "0|1";
+    cursor = string;
+
+    printf("String to parse: %s\n", string);
+
+    if (E(&cursor) && *cursor == '\0') { 
+        puts("--------------------------------");
+        puts("String is successfully parsed");
+        return 0;
+    }
+    else {
+        puts("--------------------------------");
+        puts("Error in parsing String");
+        return 1;
+    }
     return 0;
 }
