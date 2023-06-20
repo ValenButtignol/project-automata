@@ -5,6 +5,7 @@
 #include "include/algorithms/union_ndfa.h"
 #include "include/algorithms/read_and_write.h"
 #include "include/algorithms/parser.h"
+#include "include/algorithms/minigrep.h"
 #include "include/structures/ndfa.h"
 #include "include/structures/dfa.h"
 #include "include/structures/node.h"
@@ -86,22 +87,27 @@ int main( int argc, char *argv[]) {
 
     char* cursor;
     NDFA* ndfa;
-    char* string = "(0.1|2)*";
-    cursor = string;
+    char* regex = "(0.2)*.1";
+    char* text = "222020202";
+    cursor = regex;
 
-    printf("String to parse: %s\n", string);
+    printf("String to parse: %s\n", regex);
 
     if (E(&cursor, &ndfa) && *cursor == '\0') { 
         puts("--------------------------------");
         puts("String is successfully parsed");
+        if(minigrep(regex, text, *ndfa)){
+            puts("Coincidence found");
+        }
+        else{
+            puts("No coincidence found");
+        }
     }
     else {
         puts("--------------------------------");
         puts("Error in parsing String");
     }
 
-    printf("NDFA: \n");
-    toStringNDFA(*ndfa);
     freeNDFA(*ndfa);
     return 0;
 }

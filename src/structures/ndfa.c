@@ -182,7 +182,7 @@ NDFA* createNDFAFromSymbol(int symbol){
         exit(1);
     }
     ndfa->numStates = 2;
-    ndfa->numSymbols = 1;
+    ndfa->numSymbols = symbol + 1;
     ndfa->initialState = 0;
     ndfa->delta = NULL;
     ndfa->finalStates = NULL;
