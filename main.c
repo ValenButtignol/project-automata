@@ -14,98 +14,28 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
-
-
 int main( int argc, char *argv[]) {
-
-    /* printf("Amount of states for the automaton: %s\n", argv[1]);
-    printf("Amount of alphabet symbols: %s\n", argv[2]);
-    printf("Name of the input file: %s\n", argv[3]);
-    printf("String to evaluate: %s\n", argv[4]);
-    printf("Name of the output file: %s\n", argv[5]);
-
-    int numStates = atoi(argv[1]);
-    int numSymbols = atoi(argv[2]);
-    char* inputFileName = argv[3];
-    char* string = argv[4];
-    char* outputFileName = argv[5];
-
-
-    NDFA ndfa;
-    NDFA ndfa2;
-    NDFA automataResult; */
-
-/********************************* ACA EMPIEZA LA LECTURA *****************************************/
-
-    // leer archivo
-    /* FILE *file;
-    file = fopen(inputFileName, "r");
-    if (file == NULL) {
-        printf("Error\n");
-        exit(1);
-    }
-    ndfa = createFromFile(file, numStates, numSymbols);
-    fclose(file);
-
-    file = fopen("automaton2.dot", "r");
-    if (file == NULL) {
-        printf("Error\n");
-        exit(1);
-    }
-    ndfa2 = createFromFile(file, numStates, numSymbols);
-    fclose(file);
-
-    automataResult = unionNDFA(ndfa, ndfa2); */
-
-/********************************* ACA TERMINA LA LECTURA *****************************************/
-
-
-
-    /* int result = belongsToLanguage(ndfa, string);
-    if (result == TRUE) {
-        printf("The string is accepted.\n");
-    } else {
-        printf("The string is not accepted.\n");
-    } */
-
-    /* FILE *file2;
-    file2 = fopen(outputFileName, "w");
-    if (file2 == NULL) {
-        printf("Error\n");
-        exit(1);
-    }
-
-    writeToFile(file2, automataResult);
-    fclose(file2);
-    freeNDFA(ndfa);
-    freeNDFA(ndfa2);
-    freeNDFA(automataResult); */
-
-
-/********************************* PARSING *****************************************/
 
     char* cursor;
     NDFA* ndfa;
-    char* regex = "(0.2)*.1";
-    char* text = "222020202";
+    char* regex = argv[1];
+    char* text = argv[2];
     cursor = regex;
 
     printf("String to parse: %s\n", regex);
 
     if (E(&cursor, &ndfa) && *cursor == '\0') { 
-        puts("--------------------------------");
-        puts("String is successfully parsed");
+        printf("String is successfully parsed\n");
+        printf("Text to evaluate: %s\n", text);
         if(minigrep(regex, text, *ndfa)){
-            puts("Coincidence found");
+            printf("Coincidence found\n");
         }
         else{
-            puts("No coincidence found");
+            printf("No coincidence found\n");
         }
     }
     else {
-        puts("--------------------------------");
-        puts("Error in parsing String");
+        printf("Error in parsing string: %s\n", regex);
     }
 
     freeNDFA(*ndfa);
