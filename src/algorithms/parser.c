@@ -74,7 +74,7 @@ int F(char** cursor, NDFA** ndfa){
     return FALSE;
 }
 
-//F'->*F'
+//F'->*
 //F'->-1
 int Fdash(char** cursor, NDFA** ndfa){
     if(**cursor == '*'){

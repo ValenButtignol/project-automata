@@ -13,12 +13,12 @@ gcc main.c src/algorithms/belongs_to_language.c src/algorithms/concatenate_ndfa.
 
 For executing this project, you must use the next commands:
 ```
-./main quantityOfStates quantityOfSymbols automaton.dot "string" output.dot
+./main regex textToEvaluate 
 ```
 
 Here's an example:
 ```
-./main 4 2 automaton.dot "00110" "output.dot"
+./main "(0.1)*.2" "0101011101201"
 ```
 
 
