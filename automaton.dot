@@ -2,5 +2,8 @@ digraph{
 inic[shape=point];
 inic->0;
 0->1 [label="0"];
-1[shape=doublecircle];
+1->2 [label="0"];
+2->4 [label="0"];
+3->4 [label="0"];
+4[shape=doublecircle];
 }

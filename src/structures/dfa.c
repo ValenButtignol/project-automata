@@ -134,3 +134,103 @@ void freeDFA(DFA dfa) {
         free(temp);
     }
 }
+
+
+void deleteUnreachableStates(DFA* dfa){
+    Node* reachableStates = getReachableStates(*dfa);
+    for (int i = 0; i < dfa->numStates; i++) {
+        if (!containsData(reachableStates, i)) {
+            deleteDFAState(dfa, i);
+            renameAfterState(dfa, i);
+        }
+    }
+}
+
+void deleteDFAState(DFA* dfa, int i){
+    // Delete the transitions that have the state i as fromState.
+    DFATransitionNode* currentTransition = dfa->delta;
+    while (currentTransition != NULL) {
+        if (currentTransition->transition.fromState == i) {
+            deleteDFATransition(dfa, currentTransition->transition.fromState, currentTransition->transition.symbol);
+        }
+        currentTransition = currentTransition->next;
+    }
+    // Delete the transitions that have the state i as toState.
+    currentTransition = dfa->delta;
+    while (currentTransition != NULL) {
+        if (currentTransition->transition.toState == i) {
+            deleteDFATransition(dfa, currentTransition->transition.fromState, currentTransition->transition.symbol);
+        }
+        currentTransition = currentTransition->next;
+    }
+    dfa->numStates--;
+}
+
+void deleteDFATransition(DFA* dfa, int fromState, int symbol){
+    DFATransitionNode* currentTransition = dfa->delta;
+    DFATransitionNode* previousTransition = NULL;
+    while (currentTransition != NULL) {
+        if (currentTransition->transition.fromState == fromState && currentTransition->transition.symbol == symbol) {
+            if (previousTransition == NULL) {
+                dfa->delta = currentTransition->next;
+            } else {
+                previousTransition->next = currentTransition->next;
+            }
+            free(currentTransition);
+            return;
+        }
+        previousTransition = currentTransition;
+        currentTransition = currentTransition->next;
+    }
+}
+
+
+Node* getReachableStates(DFA dfa) {
+    // Apply a dfs algorithm to the automata and return a list with the states reached.
+    
+    // Create a list to store the states reached.
+    Node* reachableStates = NULL;
+    // Create a list to store the states that have been visited.
+    Node* visitedStates = NULL;
+    // Add the initial state to the list of visited states.
+    addData(&visitedStates, dfa.initialState);
+    // Apply the dfs algorithm to the automata.
+    dfs(dfa, dfa.initialState, &reachableStates, &visitedStates);
+    // Return the list of states reached.
+    return reachableStates;
+}
+
+
+void renameAfterState(DFA* dfa, int i) {
+    // This function rename all the states with the actual data - 1, that contains data greater than i.
+    // Iterate the transitions of the automata.
+    DFATransitionNode* currentTransition = dfa->delta;
+    while (currentTransition != NULL) {
+        // If the from state is greater than i, rename it.
+        if (currentTransition->transition.fromState > i) {
+            currentTransition->transition.fromState--;
+        }
+        // If the to state is greater than i, rename it.
+        if (currentTransition->transition.toState > i) {
+            currentTransition->transition.toState--;
+        }
+        currentTransition = currentTransition->next;
+    }
+}
+
+void dfs(DFA dfa, int state, Node** reachableStates, Node** visitedStates) {
+    // Add the state to the list of reachable states.
+    addData(reachableStates, state);
+    // Iterate the transitions of the automata.
+    DFATransitionNode* currentTransition = dfa.delta;
+    while (currentTransition != NULL) {
+        // If the transition is from the state and the to state has not been visited.
+        if (currentTransition->transition.fromState == state && !containsData(*visitedStates, currentTransition->transition.toState)) {
+            // Add the to state to the list of visited states.
+            addData(visitedStates, currentTransition->transition.toState); 
+            // Apply the dfs algorithm to the automata.
+            dfs(dfa, currentTransition->transition.toState, reachableStates, visitedStates);
+        }
+        currentTransition = currentTransition->next;
+    }
+}

@@ -12,6 +12,12 @@ typedef struct Node {
     struct Node* next;
 } Node;
 
+typedef struct MarkableSet {
+    int data;
+    int marked;
+    struct Node* next;
+} MarkableSet;
+
 
 /**
  * This function creates a new node.

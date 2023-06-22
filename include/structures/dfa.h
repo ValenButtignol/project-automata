@@ -113,4 +113,14 @@ void toStringDFA(DFA dfa);
 */
 void freeDFA(DFA dfa);
 
+
+void deleteUnreachableStates(DFA* dfa);
+void deleteDFAState(DFA* dfa, int i);
+void deleteDFATransition(DFA* dfa, int fromState, int symbol);
+Node* getReachableStates(DFA dfa); 
+void renameAfterState(DFA* dfa, int i); 
+void dfs(DFA dfa, int state, Node** reachableStates, Node** visitedStates);
+
+
+
 #endif
