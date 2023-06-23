@@ -1,0 +1,22 @@
+Regex grammar LL(1): 
+
+Reemplazamos los simbolos terminales a, b y c por 0, 1, y 2, ya que nuestra implementacion de automata 
+reconoce como simbolos solo números.
+
+G = < {E, E', T, T', F, F', P, L}, {|, ., *, 0, 1, 2}, P', S >
+P':
+  S->E#
+  E->TE'
+  E'->|TE'
+  E'->lambda
+  T->FT'
+  T'->.FT'
+  T'->lambda
+  F->PF'
+  F'->*
+  F'->lambda
+  P->(E)
+  P->L
+  L->0
+  L->1
+  L->2
