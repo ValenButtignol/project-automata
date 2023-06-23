@@ -26,6 +26,7 @@ void addSet(SetOfMarkableSets** head, Node* set){
         }
         current->next = newNode;
     }
+    (*head)->size++;
 }
 
 /**

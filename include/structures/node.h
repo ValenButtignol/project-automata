@@ -9,6 +9,7 @@
 */
 typedef struct Node {
     int data;
+    int size;
     struct Node* next;
 } Node;
 

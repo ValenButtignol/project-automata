@@ -13,6 +13,7 @@
 typedef struct SetOfMarkableSets {
     Node* set;
     int marked;
+    int size;
     struct SetOfMarkableSets* next;
 } SetOfMarkableSets;
 

@@ -15,6 +15,7 @@ Node* createNode(int data) {
     }
     newNode->data = data;
     newNode->next = NULL;
+    newNode->size = 1;
     return newNode;
 }
 
@@ -27,7 +28,9 @@ Node* createNode(int data) {
 */
 void addData(Node** head, int data) {
     Node* newNode = createNode(data);
-
+    // print new Node:
+    printf("Head: %d\n", (*head)->data);
+    
     if (*head == NULL || data < (*head)->data) {
         newNode->next = *head;
         *head = newNode;
@@ -46,6 +49,7 @@ void addData(Node** head, int data) {
         newNode->next = current->next;
         current->next = newNode;
     }
+    (*head)->size++;
 }
 
 
